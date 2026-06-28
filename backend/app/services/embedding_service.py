@@ -11,7 +11,7 @@ class EmbeddingService:
         model_name = os.getenv("EMBEDDING_MODEL", "BAAI/bge-large-en-v1.5")
         print(f"Cargando modelo de embeddings: {model_name}")
         self.model = SentenceTransformer(model_name)
-        self.dimension = self.model.get_sentence_embedding_dimension()
+        self.dimension = self.model.get_embedding_dimension()
         print(f"Modelo cargado. Dimensión de embeddings: {self.dimension}")
 
     def embed_text(self, text: str) -> list[float]:
