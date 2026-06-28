@@ -63,12 +63,14 @@ class QdrantService:
         
         Devuelve los top_k chunks más relevantes con su texto y metadatos.
         """
-        results = self.client.search(
+        response = self.client.query_points(
             collection_name=COLLECTION_NAME,
-            query_vector=query_embedding,
+            query=query_embedding,
             limit=top_k,
             with_payload=True
         )
+
+        results = response[0] if isinstance(response, tuple) else response.points
 
         return [
             {
