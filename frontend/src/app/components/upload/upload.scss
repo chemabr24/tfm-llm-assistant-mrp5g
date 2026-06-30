@@ -1,0 +1,27 @@
+.upload-container {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4px;
+  gap: 8px;
+
+  .attach-button {
+    color: rgba(0, 0, 0, 0.54);
+
+    &:hover {
+      color: #1976d2;
+    }
+  }
+
+  .file-name {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .upload-progress {
+    width: 100px;
+  }
+}

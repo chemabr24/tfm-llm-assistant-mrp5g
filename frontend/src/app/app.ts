@@ -1,11 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { ChatContainerComponent } from './components/chat-container/chat-container';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [ChatContainerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  protected readonly title = signal('frontend');
-}
+export class App {}
