@@ -1,9 +1,11 @@
 .chat-wrapper {
-  display: flex;
+   display: flex;
   flex-direction: column;
-  height: 100vh;
+  flex: 1;
+  overflow: hidden;
   max-width: 900px;
   margin: 0 auto;
+  width: 100%;
   padding: 16px;
   box-sizing: border-box;
 
@@ -96,18 +98,36 @@
 
   .input-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 8px;
-    padding: 8px 0;
+    padding: 12px 0 8px;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+    app-upload {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
 
     .input-field {
       flex: 1;
+
+      ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
 
       textarea {
         resize: none;
         max-height: 120px;
       }
+    }
+
+    button[mat-fab] {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      flex-shrink: 0;
     }
   }
 }

@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ChatService } from '../../services/chat.service';
 import { Message, Source, HistoryMessage } from '../../models/chat.models';
 import { UploadComponent } from '../upload/upload';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,8 @@ import { UploadComponent } from '../upload/upload';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    UploadComponent
+    UploadComponent,
+    MarkdownComponent
   ],
   templateUrl: './chat.html',
   styleUrl: './chat.scss'
