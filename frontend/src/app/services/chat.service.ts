@@ -12,14 +12,49 @@ export class ChatService {
 
   constructor(private http: HttpClient) {}
 
-  uploadDocument(file: File): Observable<UploadResponse> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<UploadResponse>(`${this.apiUrl}/upload`, formData);
+  // ─── SESIONES ────────────────────────────────────────────────────────────
+
+  createSession(title: string, patientIdentifier?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/sessions`, {
+      title,
+      patient_identifier: patientIdentifier
+    });
   }
 
-  getProactiveIntro(filename: string): Observable<ChatResponse> {
-    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/proactive`, { filename });
+  listSessions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/sessions`);
+  }
+
+  getSession(sessionId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/sessions/${sessionId}`);
+  }
+
+  deleteSession(sessionId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/sessions/${sessionId}`);
+  }
+
+  updateTask(taskId: string, status: 'completed' | 'archived'): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/sessions/tasks/${taskId}`, { status });
+  }
+
+  // ─── DOCUMENTOS ──────────────────────────────────────────────────────────
+
+  uploadDocument(file: File, sessionId: string): Observable<UploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<UploadResponse>(
+      `${this.apiUrl}/upload?session_id=${sessionId}`,
+      formData
+    );
+  }
+
+  // ─── CHAT ─────────────────────────────────────────────────────────────────
+
+  getProactiveIntro(filename: string, sessionId: string): Observable<ChatResponse> {
+    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/proactive`, {
+      filename,
+      session_id: sessionId
+    });
   }
 
   sendMessage(request: ChatRequest): Observable<string> {

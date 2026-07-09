@@ -3,5 +3,28 @@
     <h1>Asistente Médico MRP-5G</h1>
     <p>Sube documentos clínicos y realiza consultas en lenguaje natural</p>
   </div>
-  <app-chat style="display:flex; flex:1; overflow:hidden;"></app-chat>
+
+  <div class="main-content">
+    <div class="sidebar">
+      <app-session-list
+        (sessionSelected)="onSessionSelected($event)"
+        (createSessionClicked)="onCreateSession()">
+      </app-session-list>
+    </div>
+
+    <div class="content">
+      @if (selectedSessionId()) {
+        <app-session-view [sessionId]="selectedSessionId()!"></app-session-view>
+      } @else {
+        <div class="empty-state">
+          <span class="empty-icon">🏥</span>
+          <h2>Selecciona una sesión</h2>
+          <p>Elige una sesión del panel izquierdo o crea una nueva para empezar</p>
+          <button mat-flat-button color="primary" (click)="onCreateSession()">
+            Nueva sesión
+          </button>
+        </div>
+      }
+    </div>
+  </div>
 </div>

@@ -1,0 +1,36 @@
+<div class="create-session-container">
+  <h2 mat-dialog-title>Nueva sesión</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título de la sesión</mat-label>
+      <input
+        matInput
+        [value]="title()"
+        (input)="title.set($any($event.target).value)"
+        placeholder="Ej: Revisión HTA, Control diabetes..."
+        required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Identificador del paciente (opcional)</mat-label>
+      <input
+        matInput
+        [value]="patientIdentifier()"
+        (input)="patientIdentifier.set($any($event.target).value)"
+        placeholder="Ej: PAC-001, Juan G...">
+      <mat-hint>No introduzcas datos identificativos reales</mat-hint>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">Cancelar</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="create()"
+      [disabled]="!title().trim() || isCreating()">
+      {{ isCreating() ? 'Creando...' : 'Crear sesión' }}
+    </button>
+  </mat-dialog-actions>
+</div>

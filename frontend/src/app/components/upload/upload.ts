@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,8 @@ import { UploadResponse } from '../../models/chat.models';
 export class UploadComponent {
 
   @Output() documentUploaded = new EventEmitter<string>();
+
+  @Input() sessionId!: string;
 
   selectedFile: File | null = null;
   isUploading = false;
@@ -51,7 +53,7 @@ export class UploadComponent {
     this.isUploading = true;
     this.uploadProgress = true;
 
-    this.chatService.uploadDocument(this.selectedFile).subscribe({
+    this.chatService.uploadDocument(this.selectedFile, this.sessionId).subscribe({
       next: (response: UploadResponse) => {
         this.snackBar.open(
           `✓ ${response.chunks_indexados} fragmentos indexados`,

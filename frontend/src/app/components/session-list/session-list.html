@@ -1,0 +1,42 @@
+<div class="session-list-container">
+  <div class="session-list-header">
+    <h2>Sesiones</h2>
+    <button mat-icon-button (click)="onCreateSession()" matTooltip="Nueva sesión">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <mat-nav-list>
+    @for (session of sessions(); track session.id) {
+      <mat-list-item
+        [class.selected]="selectedSessionId() === session.id"
+        (click)="selectSession(session.id)">
+        <div class="session-item">
+          <div class="session-info">
+            <span class="session-title">{{ session.title }}</span>
+            @if (session.patient_identifier) {
+              <span class="session-patient">{{ session.patient_identifier }}</span>
+            }
+          </div>
+          <button
+            mat-icon-button
+            class="delete-btn"
+            (click)="deleteSession($event, session.id)"
+            matTooltip="Archivar sesión">
+            <mat-icon>archive</mat-icon>
+          </button>
+        </div>
+      </mat-list-item>
+    }
+
+    @if (sessions().length === 0) {
+      <div class="empty-state">
+        <mat-icon>folder_open</mat-icon>
+        <p>No hay sesiones activas</p>
+        <p>Crea una nueva sesión para empezar</p>
+      </div>
+    }
+  </mat-nav-list>
+</div>
