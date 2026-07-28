@@ -1,0 +1,104 @@
+.task-list-container {
+  padding: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .panel-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 16px;
+
+    .section-content {
+      flex: 1;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar { width: 4px; }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 4px;
+      }
+    }
+  }
+
+  mat-divider {
+    flex-shrink: 0;
+  }
+
+  .task-list-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+
+    mat-icon {
+      color: #1976d2;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .task-count {
+      background-color: #1976d2;
+      color: white;
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+  }
+
+  .empty-tasks {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.38);
+    font-size: 13px;
+    padding: 16px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background-color: #f5f8fc;
+    border-left: 3px solid #1976d2;
+
+    .task-content {
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.4;
+      padding-top: 4px;
+    }
+
+    .task-actions {
+      display: flex;
+      flex-shrink: 0;
+    }
+  }
+
+  .doc-icon {
+    color: #e53935;
+    flex-shrink: 0;
+  }
+
+  .doc-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .doc-chunks {
+    font-size: 11px;
+    color: rgba(0,0,0,0.54);
+  }
+}

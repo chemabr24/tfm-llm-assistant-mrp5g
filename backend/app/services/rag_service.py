@@ -18,15 +18,16 @@ class RAGService:
         )
         self.model = os.getenv("LLM_MODEL", "gpt-oss:20b")
 
-    def retrieve(self, query: str, top_k: int = 5) -> list[dict]:
+    def retrieve(self, query: str, top_k: int = 5, session_id: str = None) -> list[dict]:
         """
         Recupera los chunks más relevantes para una consulta.
         
         Calcula el embedding de la consulta y busca en Qdrant
-        los fragmentos más similares semánticamente.
+        los fragmentos más similares semánticamente, filtrando
+        por sesión si se proporciona session_id.
         """
         query_embedding = self.embedding_service.embed_text(query)
-        chunks = self.qdrant_service.search(query_embedding, top_k=top_k)
+        chunks = self.qdrant_service.search(query_embedding, top_k=top_k, session_id=session_id)
         return chunks
 
     def build_prompt(self, query: str, chunks: list[dict], history: list[dict]) -> list[dict]:

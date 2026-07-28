@@ -2,6 +2,7 @@ import os
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from dotenv import load_dotenv
+from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 load_dotenv()
 
@@ -46,7 +47,8 @@ class QdrantService:
                 payload={
                     "text": chunk["text"],
                     "page": chunk["page"],
-                    "source": chunk["source"]
+                    "source": chunk["source"],
+                    "session_id": chunk.get("session_id", "")
                 }
             )
             for chunk, embedding in zip(chunks, embeddings)
@@ -57,17 +59,30 @@ class QdrantService:
             points=points
         )
 
-    def search(self, query_embedding: list[float], top_k: int = 5) -> list[dict]:
+    def search(self, query_embedding: list[float], top_k: int = 5, session_id: str = None) -> list[dict]:
         """
         Busca los chunks más similares a un embedding de consulta.
         
-        Devuelve los top_k chunks más relevantes con su texto y metadatos.
+        Filtra por session_id si se proporciona, para buscar solo
+        en los documentos de esa sesión.
         """
+
+        search_filter = None
+        if session_id:
+            search_filter = Filter(
+                must=[
+                    FieldCondition(
+                        key="session_id",
+                        match=MatchValue(value=session_id)
+                    )
+                ]
+            )
         response = self.client.query_points(
             collection_name=COLLECTION_NAME,
             query=query_embedding,
             limit=top_k,
-            with_payload=True
+            with_payload=True,
+            query_filter=search_filter
         )
 
         results = response[0] if isinstance(response, tuple) else response.points

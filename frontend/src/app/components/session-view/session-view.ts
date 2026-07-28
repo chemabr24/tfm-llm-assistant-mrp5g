@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, signal, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -6,13 +6,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ChatService } from '../../services/chat.service';
-import { Message, Source, HistoryMessage } from '../../models/chat.models';
-import { UploadComponent } from '../upload/upload';
+import { MatChipsModule } from '@angular/material/chips';
 import { MarkdownComponent } from 'ngx-markdown';
+import { ChatService } from '../../services/chat.service';
+import { TaskListComponent } from '../task-list/task-list';
+import { UploadComponent } from '../upload/upload';
+import { Message, Source, Task, HistoryMessage, SessionDetail } from '../../models/chat.models';
 
 @Component({
-  selector: 'app-chat',
+  selector: 'app-session-view',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,32 +24,67 @@ import { MarkdownComponent } from 'ngx-markdown';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    UploadComponent,
-    MarkdownComponent
+    MatChipsModule,
+    MarkdownComponent,
+    TaskListComponent,
+    UploadComponent
   ],
-  templateUrl: './chat.html',
-  styleUrl: './chat.scss'
+  templateUrl: './session-view.html',
+  styleUrl: './session-view.scss'
 })
-export class ChatComponent implements OnInit {
+export class SessionViewComponent implements OnInit, OnChanges {
 
+  @Input() sessionId!: string;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
+  session = signal<SessionDetail | null>(null);
   messages = signal<Message[]>([]);
+  tasks = signal<Task[]>([]);
+  suggestedQuestions = signal<string[]>([]);
   userInput = signal<string>('');
   isLoading = signal<boolean>(false);
 
-  constructor(private chatService: ChatService) {
-
-  }
+  constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
-    this.addWelcomeMessage();
+    this.loadSession();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+  if (changes['sessionId'] && !changes['sessionId'].firstChange) {
+    this.messages.set([]);
+    this.tasks.set([]);
+    this.suggestedQuestions.set([]);
+    this.userInput.set('');
+    this.session.set(null);
+    this.loadSession();
+  }
+}
+
+  loadSession(): void {
+    this.chatService.getSession(this.sessionId).subscribe({
+      next: (session: SessionDetail) => {
+        this.session.set(session);
+        this.tasks.set(session.tasks);
+
+        if (session.messages.length === 0) {
+          this.addWelcomeMessage();
+        } else {
+          const msgs: Message[] = session.messages.map(m => ({
+            role: m.role,
+            content: m.content,
+            sources: m.sources || []
+          }));
+          this.messages.set(msgs);
+        }
+      }
+    });
   }
 
   private addWelcomeMessage(): void {
     this.messages.set([{
       role: 'assistant',
-      content: '👋 Hola, soy tu asistente médico. Sube un documento PDF para empezar o hazme una pregunta directamente.',
+      content: '👋 Sesión iniciada. Sube un documento PDF para empezar o hazme una consulta directamente.',
       sources: []
     }]);
   }
@@ -56,16 +93,36 @@ export class ChatComponent implements OnInit {
     this.isLoading.set(true);
     this.addMessage('assistant', '📄 Documento recibido. Analizando contenido...');
 
-    this.chatService.getProactiveIntro(filename, '').subscribe({
+    this.chatService.getProactiveIntro(filename, this.sessionId).subscribe({
       next: (response) => {
         this.updateLastAssistantMessage(response.intro);
+        this.extractSuggestedQuestions(response.intro);
         this.isLoading.set(false);
+        this.loadSession();
       },
       error: () => {
         this.updateLastAssistantMessage('Error al analizar el documento.');
         this.isLoading.set(false);
       }
     });
+  }
+
+  private extractSuggestedQuestions(text: string): void {
+    const lines = text.split('\n');
+    const questions: string[] = [];
+    for (const line of lines) {
+      const match = line.match(/^\d+\.\s+\*\*(.+?)\*\*/);
+      if (match) {
+        questions.push(match[1]);
+      }
+    }
+    this.suggestedQuestions.set(questions.slice(0, 3));
+  }
+
+  selectSuggestedQuestion(question: string): void {
+    this.userInput.set(question);
+    this.suggestedQuestions.set([]);
+    this.sendMessage();
   }
 
   sendMessage(): void {
@@ -75,6 +132,7 @@ export class ChatComponent implements OnInit {
     this.addMessage('user', query);
     this.userInput.set('');
     this.isLoading.set(true);
+    this.suggestedQuestions.set([]);
 
     const history: HistoryMessage[] = this.messages()
       .filter(m => !m.isStreaming)
@@ -86,14 +144,16 @@ export class ChatComponent implements OnInit {
     let fullContent = '';
     let sources: Source[] = [];
 
-    this.chatService.sendMessage({ query, session_id: '', history }).subscribe({
+    this.chatService.sendMessage({
+      query,
+      session_id: this.sessionId,
+      history
+    }).subscribe({
       next: (chunk: string) => {
         if (chunk.includes('__SOURCES__')) {
           const parts = chunk.split('__SOURCES__');
           fullContent += parts[0];
-          try {
-            sources = JSON.parse(parts[1]);
-          } catch {}
+          try { sources = JSON.parse(parts[1]); } catch {}
         } else {
           fullContent += chunk;
         }
@@ -104,6 +164,7 @@ export class ChatComponent implements OnInit {
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, false);
         this.isLoading.set(false);
         this.scrollToBottom();
+        setTimeout(() => this.loadSession(), 2000);
       },
       error: () => {
         this.updateMessageAtIndex(streamingIndex, 'Error al obtener respuesta.', [], false);

@@ -1,0 +1,69 @@
+<div class="task-list-container">
+
+  <!-- Sección de tareas -->
+  <div class="panel-section">
+    <div class="task-list-header">
+      <mat-icon>task_alt</mat-icon>
+      <h3>Tareas pendientes</h3>
+      <span class="task-count">{{ _tasks().length }}</span>
+    </div>
+
+    <div class="section-content">
+      @if (_tasks().length === 0) {
+        <div class="empty-tasks">
+          <p>No hay tareas pendientes</p>
+        </div>
+      }
+
+      @for (task of _tasks(); track task.id) {
+        <div class="task-item">
+          <span class="task-content">{{ task.content }}</span>
+          <div class="task-actions">
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="completeTask(task.id)"
+              matTooltip="Marcar como completada">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="archiveTask(task.id)"
+              matTooltip="Archivar">
+              <mat-icon>archive</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Sección de documentos -->
+  <div class="panel-section">
+    <div class="task-list-header">
+      <mat-icon>description</mat-icon>
+      <h3>Documentos</h3>
+      <span class="task-count">{{ _documents().length }}</span>
+    </div>
+
+    <div class="section-content">
+      @if (_documents().length === 0) {
+        <div class="empty-tasks">
+          <p>No hay documentos cargados</p>
+        </div>
+      }
+
+      @for (doc of _documents(); track doc.id) {
+        <div class="task-item">
+          <mat-icon class="doc-icon">picture_as_pdf</mat-icon>
+          <div class="doc-info">
+            <span class="task-content">{{ doc.filename }}</span>
+            <span class="doc-chunks">{{ doc.chunk_count }} fragmentos</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

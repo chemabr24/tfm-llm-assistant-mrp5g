@@ -1,0 +1,93 @@
+<div class="session-view-wrapper">
+
+  <!-- Panel central: chat -->
+  <div class="chat-panel">
+    <div class="messages-container" #messagesContainer>
+      @for (message of messages(); track $index) {
+        <div class="message"
+          [class.user-message]="message.role === 'user'"
+          [class.assistant-message]="message.role === 'assistant'">
+          <div class="message-bubble">
+            <markdown class="message-content" [data]="message.content"></markdown>
+
+            @if (message.isStreaming) {
+              <span class="cursor">▋</span>
+            }
+
+            @if (message.sources && message.sources.length > 0) {
+              <div class="sources">
+                <span class="sources-title">Fuentes:</span>
+                @for (source of message.sources; track $index) {
+                  <span class="source-chip">
+                    📄 {{ source.source }} · p.{{ source.page }}
+                  </span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (isLoading() && messages()[messages().length - 1]?.role !== 'assistant') {
+        <div class="message assistant-message">
+          <div class="message-bubble">
+            <mat-spinner diameter="20"></mat-spinner>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Preguntas sugeridas -->
+    @if (suggestedQuestions().length > 0) {
+      <div class="suggested-questions">
+        <span class="suggested-label">Preguntas sugeridas:</span>
+        @for (question of suggestedQuestions(); track $index) {
+          <button mat-stroked-button color="primary"
+            class="question-chip"
+            (click)="selectSuggestedQuestion(question)">
+            {{ question }}
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Input -->
+    <div class="input-container">
+      <app-upload
+        [sessionId]="sessionId"
+        (documentUploaded)="onDocumentUploaded($event)">
+      </app-upload>
+
+      <mat-form-field appearance="outline" class="input-field">
+        <textarea
+          matInput
+          [value]="userInput()"
+          (input)="userInput.set($any($event.target).value)"
+          (keydown)="onEnterKey($event)"
+          placeholder="Escribe tu consulta médica..."
+          rows="1"
+          cdkTextareaAutosize>
+        </textarea>
+      </mat-form-field>
+
+      <button
+        mat-fab
+        color="primary"
+        (click)="sendMessage()"
+        [disabled]="isLoading() || !userInput().trim()"
+        matTooltip="Enviar">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel derecho: tareas -->
+  <div class="tasks-panel">
+    <app-task-list
+      [tasks]="tasks()"
+      [documents]="session()?.documents || []"
+      (taskUpdated)="loadSession()">
+    </app-task-list>
+  </div>
+
+</div>
