@@ -5,8 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { ChatService } from '../../services/chat.service';
-import { Task } from '../../models/chat.models';
+import { Task, Document } from '../../models/chat.models';
 
 @Component({
   selector: 'app-task-list',
@@ -17,7 +18,8 @@ import { Task } from '../../models/chat.models';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
+    MatDividerModule
   ],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss'
@@ -28,9 +30,14 @@ export class TaskListComponent {
     this._tasks.set(value);
   }
 
+  @Input() set documents(value: Document[]) {
+    this._documents.set(value);
+  }
+
   @Output() taskUpdated = new EventEmitter<void>();
 
   _tasks = signal<Task[]>([]);
+  _documents = signal<Document[]>([]);
 
   constructor(private chatService: ChatService) {}
 
