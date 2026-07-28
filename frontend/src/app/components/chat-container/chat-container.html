@@ -14,7 +14,9 @@
 
     <div class="content">
       @if (selectedSessionId()) {
-        <app-session-view [sessionId]="selectedSessionId()!"></app-session-view>
+        <app-session-view 
+        [sessionId]="selectedSessionId()!"
+        style="display: flex; flex: 1; overflow: hidden; min-width: 0;"></app-session-view>
       } @else {
         <div class="empty-state">
           <span class="empty-icon">🏥</span>

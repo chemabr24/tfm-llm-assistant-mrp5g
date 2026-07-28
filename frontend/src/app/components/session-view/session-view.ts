@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, signal, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -32,7 +32,7 @@ import { Message, Source, Task, HistoryMessage, SessionDetail } from '../../mode
   templateUrl: './session-view.html',
   styleUrl: './session-view.scss'
 })
-export class SessionViewComponent implements OnInit {
+export class SessionViewComponent implements OnInit, OnChanges {
 
   @Input() sessionId!: string;
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
@@ -49,6 +49,17 @@ export class SessionViewComponent implements OnInit {
   ngOnInit(): void {
     this.loadSession();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+  if (changes['sessionId'] && !changes['sessionId'].firstChange) {
+    this.messages.set([]);
+    this.tasks.set([]);
+    this.suggestedQuestions.set([]);
+    this.userInput.set('');
+    this.session.set(null);
+    this.loadSession();
+  }
+}
 
   loadSession(): void {
     this.chatService.getSession(this.sessionId).subscribe({
