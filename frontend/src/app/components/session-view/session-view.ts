@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, signal, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -40,7 +40,6 @@ export class SessionViewComponent implements OnInit, OnChanges {
   session = signal<SessionDetail | null>(null);
   messages = signal<Message[]>([]);
   tasks = signal<Task[]>([]);
-  suggestedQuestions = signal<string[]>([]);
   userInput = signal<string>('');
   isLoading = signal<boolean>(false);
 
@@ -51,15 +50,14 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  if (changes['sessionId'] && !changes['sessionId'].firstChange) {
-    this.messages.set([]);
-    this.tasks.set([]);
-    this.suggestedQuestions.set([]);
-    this.userInput.set('');
-    this.session.set(null);
-    this.loadSession();
+    if (changes['sessionId'] && !changes['sessionId'].firstChange) {
+      this.messages.set([]);
+      this.tasks.set([]);
+      this.userInput.set('');
+      this.session.set(null);
+      this.loadSession();
+    }
   }
-}
 
   loadSession(): void {
     this.chatService.getSession(this.sessionId).subscribe({
@@ -96,7 +94,6 @@ export class SessionViewComponent implements OnInit, OnChanges {
     this.chatService.getProactiveIntro(filename, this.sessionId).subscribe({
       next: (response) => {
         this.updateLastAssistantMessage(response.intro);
-        this.extractSuggestedQuestions(response.intro);
         this.isLoading.set(false);
         this.loadSession();
       },
@@ -107,21 +104,22 @@ export class SessionViewComponent implements OnInit, OnChanges {
     });
   }
 
-  private extractSuggestedQuestions(text: string): void {
-    const lines = text.split('\n');
-    const questions: string[] = [];
-    for (const line of lines) {
-      const match = line.match(/^\d+\.\s+\*\*(.+?)\*\*/);
-      if (match) {
-        questions.push(match[1]);
-      }
+  onMessageClick(event: MouseEvent, message: Message): void {
+    if (message.role !== 'assistant') return;
+
+    const target = event.target as HTMLElement;
+    const text = target.textContent?.trim() || '';
+
+    const isQuestion = /^\d+\.\s+.+\?/.test(text) || text.endsWith('?');
+
+    if (isQuestion && text.length > 10) {
+      const question = text.replace(/^\d+\.\s+/, '').trim();
+      this.selectSuggestedQuestion(question);
     }
-    this.suggestedQuestions.set(questions.slice(0, 3));
   }
 
   selectSuggestedQuestion(question: string): void {
     this.userInput.set(question);
-    this.suggestedQuestions.set([]);
     this.sendMessage();
   }
 
@@ -132,7 +130,6 @@ export class SessionViewComponent implements OnInit, OnChanges {
     this.addMessage('user', query);
     this.userInput.set('');
     this.isLoading.set(true);
-    this.suggestedQuestions.set([]);
 
     const history: HistoryMessage[] = this.messages()
       .filter(m => !m.isStreaming)
