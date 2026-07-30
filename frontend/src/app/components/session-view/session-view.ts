@@ -42,6 +42,9 @@ export class SessionViewComponent implements OnInit, OnChanges {
   tasks = signal<Task[]>([]);
   userInput = signal<string>('');
   isLoading = signal<boolean>(false);
+  showScrollButton = signal<boolean>(false);
+
+  private userScrolled = false;
 
   constructor(private chatService: ChatService) {}
 
@@ -119,6 +122,8 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   selectSuggestedQuestion(question: string): void {
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
     this.userInput.set(question);
     this.sendMessage();
   }
@@ -126,6 +131,9 @@ export class SessionViewComponent implements OnInit, OnChanges {
   sendMessage(): void {
     const query = this.userInput().trim();
     if (!query || this.isLoading()) return;
+
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
 
     this.addMessage('user', query);
     this.userInput.set('');
@@ -155,12 +163,13 @@ export class SessionViewComponent implements OnInit, OnChanges {
           fullContent += chunk;
         }
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, true);
-        this.scrollToBottom();
+        if (!this.userScrolled) {
+          this.scrollToBottom();
+        }
       },
       complete: () => {
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, false);
         this.isLoading.set(false);
-        this.scrollToBottom();
         setTimeout(() => this.loadSession(), 2000);
       },
       error: () => {
@@ -179,7 +188,9 @@ export class SessionViewComponent implements OnInit, OnChanges {
 
   private addMessage(role: 'user' | 'assistant', content: string, sources: Source[] = [], isStreaming = false): void {
     this.messages.update(msgs => [...msgs, { role, content, sources, isStreaming }]);
-    this.scrollToBottom();
+    if (!this.userScrolled) {
+      this.scrollToBottom();
+    }
   }
 
   private updateLastAssistantMessage(content: string): void {
@@ -202,11 +213,77 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   private scrollToBottom(): void {
+    if (this.userScrolled) return;
     setTimeout(() => {
+      if (this.userScrolled) return;
       if (this.messagesContainer) {
         this.messagesContainer.nativeElement.scrollTop =
           this.messagesContainer.nativeElement.scrollHeight;
       }
     }, 50);
+  }
+
+  parseAssistantMessage(content: string): { text: string; questions: string[] } {
+    const startMarker = '---PREGUNTAS_SUGERIDAS---';
+    const endMarker = '---FIN_PREGUNTAS---';
+
+    const startIndex = content.indexOf(startMarker);
+
+    if (startIndex !== -1) {
+      const text = content.substring(0, startIndex).trim();
+      const afterStart = content.substring(startIndex + startMarker.length);
+      const endIndex = afterStart.indexOf(endMarker);
+      const questionsBlock = endIndex !== -1
+        ? afterStart.substring(0, endIndex)
+        : afterStart;
+
+      const questions = questionsBlock
+        .split('\n')
+        .map(line => line.replace(/^[-*\d.]\s*/, '').trim())
+        .filter(line => line.length > 5 && line.includes('?'));
+
+      return { text, questions };
+    }
+
+    // Fallback: detectar patrones alternativos del modelo
+    const fallbackPatterns = [
+      /pregunta[s]?\s+sugerida[s]?:/i,
+      /pregunta[s]?\s+recomendada[s]?:/i,
+      /sugerencia[s]?\s+de\s+pregunta[s]?:/i,
+      /podrías\s+preguntar:/i,
+      /siguiente\s+pregunta:/i,
+      /siguientes\s+preguntas?:/i
+    ];
+    for (const pattern of fallbackPatterns) {
+      const match = content.search(pattern);
+      if (match !== -1) {
+        const text = content.substring(0, match).trim();
+        const afterMatch = content.substring(match);
+        const questions = afterMatch
+          .split('\n')
+          .map(line => line.replace(/^[-*\d.]\s*/, '').trim())
+          .filter(line => line.length > 5 && line.includes('?'));
+
+        return { text, questions };
+      }
+    }
+
+    return { text: content, questions: [] };
+  }
+
+  onMessagesScroll(event: Event): void {
+    const container = event.target as HTMLElement;
+    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
+    this.userScrolled = !isAtBottom;
+    this.showScrollButton.set(!isAtBottom);
+  }
+
+  scrollToBottomManual(): void {
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTop =
+        this.messagesContainer.nativeElement.scrollHeight;
+    }
   }
 }

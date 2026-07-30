@@ -109,7 +109,8 @@ async def extract_and_save_tasks(response_text: str, session_id: str):
     Extrae tareas del texto de respuesta del agente y las guarda en PostgreSQL.
     """
     task_prompt = f"""From the following medical assistant response, extract ONLY the recommended tasks or actions for the healthcare professional.
-    Return ONLY a JSON object with this exact format: {{"tasks": ["task1", "task2"]}}
+    Return ONLY a JSON object with this exact format: {{"tasks": ["tarea1", "tarea2"]}}
+    The tasks MUST be written in Spanish.
     If there are no clear tasks or next steps, return: {{"tasks": []}}
     Do not include any additional text, explanation or markdown.
 
