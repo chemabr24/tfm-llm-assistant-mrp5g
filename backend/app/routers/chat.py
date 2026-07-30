@@ -173,3 +173,35 @@ async def proactive_intro(request: ProactiveRequest):
         await db.commit()
 
     return {"intro": intro}
+
+class SuggestedQuestionsRequest(BaseModel):
+    """Modelo para solicitar preguntas sugeridas."""
+    assistant_response: str
+    session_id: str
+
+@router.post("/chat/suggested-questions")
+async def get_suggested_questions(request: SuggestedQuestionsRequest):
+    """
+    Genera preguntas sugeridas basadas en la última respuesta del asistente.
+    Se llama después del streaming para mantener el control sobre el formato.
+    """
+    prompt = f"""Based on this medical assistant response, generate 2-3 questions in Spanish that the doctor could ask to continue the conversation. Questions must be in first person, directed to the assistant, and clinically relevant.
+If the response is a simple negative or there is no natural continuation, return empty.
+Return ONLY a JSON object with no additional text: {{"questions": ["¿Pregunta 1?", "¿Pregunta 2?"]}}
+
+Response:
+{request.assistant_response}"""
+
+    try:
+        response = rag_service.llm_client.chat.completions.create(
+            model=rag_service.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0
+        )
+        import json
+        text = response.choices[0].message.content.strip()
+        text = text.replace('```json', '').replace('```', '').strip()
+        data = json.loads(text)
+        return data
+    except Exception:
+        return {"questions": []}

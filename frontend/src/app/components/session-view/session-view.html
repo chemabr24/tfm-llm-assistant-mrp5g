@@ -14,10 +14,14 @@
                 @let parsed = parseAssistantMessage(message.content);
                 <markdown class="message-content" [data]="parsed.text"></markdown>
 
-                @if (parsed.questions.length > 0) {
+                @if (message.isStreaming) {
+                  <span class="cursor">▋</span>
+                }
+
+                @if (message.suggestedQuestions && message.suggestedQuestions.length > 0) {
                   <div class="suggested-questions-section">
                     <span class="suggested-label">Preguntas sugeridas:</span>
-                    @for (question of parsed.questions; track $index) {
+                    @for (question of message.suggestedQuestions; track $index) {
                       <button mat-stroked-button color="primary"
                         class="suggested-question-btn"
                         (click)="selectSuggestedQuestion(question)">
@@ -26,24 +30,21 @@
                     }
                   </div>
                 }
+
+                @if (message.sources && message.sources.length > 0) {
+                  <div class="sources">
+                    <span class="sources-title">Fuentes:</span>
+                    @for (source of message.sources; track $index) {
+                      <span class="source-chip">
+                        📄 {{ source.source }} · p.{{ source.page }}
+                      </span>
+                    }
+                  </div>
+                }
               } @else {
                 <markdown class="message-content" [data]="message.content"></markdown>
               }
 
-              @if (message.isStreaming) {
-                <span class="cursor">▋</span>
-              }
-
-              @if (message.sources && message.sources.length > 0) {
-                <div class="sources">
-                  <span class="sources-title">Fuentes:</span>
-                  @for (source of message.sources; track $index) {
-                    <span class="source-chip">
-                      📄 {{ source.source }} · p.{{ source.page }}
-                    </span>
-                  }
-                </div>
-              }
             </div>
           </div>
         }
@@ -59,10 +60,10 @@
     </div>
 
     @if (showScrollButton()) {
-    <button mat-fab color="primary" class="scroll-bottom-btn" (click)="scrollToBottomManual()">
-      <mat-icon>keyboard_arrow_down</mat-icon>
-    </button>
-  }
+      <button mat-fab color="primary" class="scroll-bottom-btn" (click)="scrollToBottomManual()">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+    }
 
     <!-- Input -->
     <div class="input-container">

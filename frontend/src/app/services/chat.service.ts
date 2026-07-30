@@ -83,4 +83,11 @@ export class ChatService {
       }).catch(err => observer.error(err));
     });
   }
+
+  getSuggestedQuestions(assistantResponse: string, sessionId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/chat/suggested-questions`, {
+      assistant_response: assistantResponse,
+      session_id: sessionId
+    });
+  }
 }

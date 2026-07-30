@@ -68,15 +68,18 @@ export class SessionViewComponent implements OnInit, OnChanges {
         this.session.set(session);
         this.tasks.set(session.tasks);
 
-        if (session.messages.length === 0) {
-          this.addWelcomeMessage();
-        } else {
-          const msgs: Message[] = session.messages.map(m => ({
-            role: m.role,
-            content: m.content,
-            sources: m.sources || []
-          }));
-          this.messages.set(msgs);
+        // Solo cargamos mensajes si el array está vacío
+        if (this.messages().length === 0) {
+          if (session.messages.length === 0) {
+            this.addWelcomeMessage();
+          } else {
+            const msgs: Message[] = session.messages.map(m => ({
+              role: m.role,
+              content: m.content,
+              sources: m.sources || []
+            }));
+            this.messages.set(msgs);
+          }
         }
       }
     });
@@ -171,6 +174,21 @@ export class SessionViewComponent implements OnInit, OnChanges {
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, false);
         this.isLoading.set(false);
         setTimeout(() => this.loadSession(), 2000);
+
+        this.chatService.getSuggestedQuestions(fullContent, this.sessionId).subscribe({
+          next: (data) => {
+            if (data.questions && data.questions.length > 0) {
+              this.messages.update(msgs => {
+                const updated = [...msgs];
+                updated[streamingIndex] = {
+                  ...updated[streamingIndex],
+                  suggestedQuestions: data.questions
+                };
+                return updated;
+              });
+            }
+          }
+        });
       },
       error: () => {
         this.updateMessageAtIndex(streamingIndex, 'Error al obtener respuesta.', [], false);
@@ -224,50 +242,6 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   parseAssistantMessage(content: string): { text: string; questions: string[] } {
-    const startMarker = '---PREGUNTAS_SUGERIDAS---';
-    const endMarker = '---FIN_PREGUNTAS---';
-
-    const startIndex = content.indexOf(startMarker);
-
-    if (startIndex !== -1) {
-      const text = content.substring(0, startIndex).trim();
-      const afterStart = content.substring(startIndex + startMarker.length);
-      const endIndex = afterStart.indexOf(endMarker);
-      const questionsBlock = endIndex !== -1
-        ? afterStart.substring(0, endIndex)
-        : afterStart;
-
-      const questions = questionsBlock
-        .split('\n')
-        .map(line => line.replace(/^[-*\d.]\s*/, '').trim())
-        .filter(line => line.length > 5 && line.includes('?'));
-
-      return { text, questions };
-    }
-
-    // Fallback: detectar patrones alternativos del modelo
-    const fallbackPatterns = [
-      /pregunta[s]?\s+sugerida[s]?:/i,
-      /pregunta[s]?\s+recomendada[s]?:/i,
-      /sugerencia[s]?\s+de\s+pregunta[s]?:/i,
-      /podrías\s+preguntar:/i,
-      /siguiente\s+pregunta:/i,
-      /siguientes\s+preguntas?:/i
-    ];
-    for (const pattern of fallbackPatterns) {
-      const match = content.search(pattern);
-      if (match !== -1) {
-        const text = content.substring(0, match).trim();
-        const afterMatch = content.substring(match);
-        const questions = afterMatch
-          .split('\n')
-          .map(line => line.replace(/^[-*\d.]\s*/, '').trim())
-          .filter(line => line.length > 5 && line.includes('?'));
-
-        return { text, questions };
-      }
-    }
-
     return { text: content, questions: [] };
   }
 

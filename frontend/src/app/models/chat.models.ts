@@ -3,6 +3,7 @@ export interface Message {
   content: string;
   sources?: Source[];
   isStreaming?: boolean;
+  suggestedQuestions?: string[];
 }
 
 export interface Source {
