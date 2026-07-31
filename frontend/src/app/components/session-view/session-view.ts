@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, signal, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -40,9 +40,11 @@ export class SessionViewComponent implements OnInit, OnChanges {
   session = signal<SessionDetail | null>(null);
   messages = signal<Message[]>([]);
   tasks = signal<Task[]>([]);
-  suggestedQuestions = signal<string[]>([]);
   userInput = signal<string>('');
   isLoading = signal<boolean>(false);
+  showScrollButton = signal<boolean>(false);
+
+  private userScrolled = false;
 
   constructor(private chatService: ChatService) {}
 
@@ -51,15 +53,14 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  if (changes['sessionId'] && !changes['sessionId'].firstChange) {
-    this.messages.set([]);
-    this.tasks.set([]);
-    this.suggestedQuestions.set([]);
-    this.userInput.set('');
-    this.session.set(null);
-    this.loadSession();
+    if (changes['sessionId'] && !changes['sessionId'].firstChange) {
+      this.messages.set([]);
+      this.tasks.set([]);
+      this.userInput.set('');
+      this.session.set(null);
+      this.loadSession();
+    }
   }
-}
 
   loadSession(): void {
     this.chatService.getSession(this.sessionId).subscribe({
@@ -67,15 +68,18 @@ export class SessionViewComponent implements OnInit, OnChanges {
         this.session.set(session);
         this.tasks.set(session.tasks);
 
-        if (session.messages.length === 0) {
-          this.addWelcomeMessage();
-        } else {
-          const msgs: Message[] = session.messages.map(m => ({
-            role: m.role,
-            content: m.content,
-            sources: m.sources || []
-          }));
-          this.messages.set(msgs);
+        // Solo cargamos mensajes si el array está vacío
+        if (this.messages().length === 0) {
+          if (session.messages.length === 0) {
+            this.addWelcomeMessage();
+          } else {
+            const msgs: Message[] = session.messages.map(m => ({
+              role: m.role,
+              content: m.content,
+              sources: m.sources || []
+            }));
+            this.messages.set(msgs);
+          }
         }
       }
     });
@@ -96,7 +100,6 @@ export class SessionViewComponent implements OnInit, OnChanges {
     this.chatService.getProactiveIntro(filename, this.sessionId).subscribe({
       next: (response) => {
         this.updateLastAssistantMessage(response.intro);
-        this.extractSuggestedQuestions(response.intro);
         this.isLoading.set(false);
         this.loadSession();
       },
@@ -107,21 +110,24 @@ export class SessionViewComponent implements OnInit, OnChanges {
     });
   }
 
-  private extractSuggestedQuestions(text: string): void {
-    const lines = text.split('\n');
-    const questions: string[] = [];
-    for (const line of lines) {
-      const match = line.match(/^\d+\.\s+\*\*(.+?)\*\*/);
-      if (match) {
-        questions.push(match[1]);
-      }
+  onMessageClick(event: MouseEvent, message: Message): void {
+    if (message.role !== 'assistant') return;
+
+    const target = event.target as HTMLElement;
+    const text = target.textContent?.trim() || '';
+
+    const isQuestion = /^\d+\.\s+.+\?/.test(text) || text.endsWith('?');
+
+    if (isQuestion && text.length > 10) {
+      const question = text.replace(/^\d+\.\s+/, '').trim();
+      this.selectSuggestedQuestion(question);
     }
-    this.suggestedQuestions.set(questions.slice(0, 3));
   }
 
   selectSuggestedQuestion(question: string): void {
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
     this.userInput.set(question);
-    this.suggestedQuestions.set([]);
     this.sendMessage();
   }
 
@@ -129,10 +135,12 @@ export class SessionViewComponent implements OnInit, OnChanges {
     const query = this.userInput().trim();
     if (!query || this.isLoading()) return;
 
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
+
     this.addMessage('user', query);
     this.userInput.set('');
     this.isLoading.set(true);
-    this.suggestedQuestions.set([]);
 
     const history: HistoryMessage[] = this.messages()
       .filter(m => !m.isStreaming)
@@ -158,13 +166,29 @@ export class SessionViewComponent implements OnInit, OnChanges {
           fullContent += chunk;
         }
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, true);
-        this.scrollToBottom();
+        if (!this.userScrolled) {
+          this.scrollToBottom();
+        }
       },
       complete: () => {
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, false);
         this.isLoading.set(false);
-        this.scrollToBottom();
         setTimeout(() => this.loadSession(), 2000);
+
+        this.chatService.getSuggestedQuestions(fullContent, this.sessionId).subscribe({
+          next: (data) => {
+            if (data.questions && data.questions.length > 0) {
+              this.messages.update(msgs => {
+                const updated = [...msgs];
+                updated[streamingIndex] = {
+                  ...updated[streamingIndex],
+                  suggestedQuestions: data.questions
+                };
+                return updated;
+              });
+            }
+          }
+        });
       },
       error: () => {
         this.updateMessageAtIndex(streamingIndex, 'Error al obtener respuesta.', [], false);
@@ -182,7 +206,9 @@ export class SessionViewComponent implements OnInit, OnChanges {
 
   private addMessage(role: 'user' | 'assistant', content: string, sources: Source[] = [], isStreaming = false): void {
     this.messages.update(msgs => [...msgs, { role, content, sources, isStreaming }]);
-    this.scrollToBottom();
+    if (!this.userScrolled) {
+      this.scrollToBottom();
+    }
   }
 
   private updateLastAssistantMessage(content: string): void {
@@ -205,11 +231,33 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   private scrollToBottom(): void {
+    if (this.userScrolled) return;
     setTimeout(() => {
+      if (this.userScrolled) return;
       if (this.messagesContainer) {
         this.messagesContainer.nativeElement.scrollTop =
           this.messagesContainer.nativeElement.scrollHeight;
       }
     }, 50);
+  }
+
+  parseAssistantMessage(content: string): { text: string; questions: string[] } {
+    return { text: content, questions: [] };
+  }
+
+  onMessagesScroll(event: Event): void {
+    const container = event.target as HTMLElement;
+    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 50;
+    this.userScrolled = !isAtBottom;
+    this.showScrollButton.set(!isAtBottom);
+  }
+
+  scrollToBottomManual(): void {
+    this.userScrolled = false;
+    this.showScrollButton.set(false);
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.scrollTop =
+        this.messagesContainer.nativeElement.scrollHeight;
+    }
   }
 }

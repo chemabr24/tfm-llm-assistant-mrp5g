@@ -3,14 +3,17 @@
   flex: 1;
   overflow: hidden;
   height: 100%;
+  width: 100%;
   justify-content: space-between;
-  
+
   .chat-panel {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
     padding: 16px;
+    min-width: 0;
+    position: relative;
 
     .messages-container {
       flex: 1;
@@ -54,9 +57,18 @@
         padding: 12px 16px;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 
-        .message-content { margin: 0; white-space: pre-wrap; line-height: 1.5; font-size: 14px; }
+        .message-content {
+          margin: 0;
+          white-space: pre-wrap;
+          line-height: 1.5;
+          font-size: 14px;
+        }
 
-        .cursor { display: inline-block; animation: blink 1s infinite; color: #1976d2; }
+        .cursor {
+          display: inline-block;
+          animation: blink 1s infinite;
+          color: #1976d2;
+        }
 
         .sources {
           margin-top: 8px;
@@ -77,29 +89,31 @@
             border-radius: 12px;
           }
         }
-      }
-    }
 
-    .suggested-questions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 8px 0;
-      align-items: center;
+        .suggested-questions-section {
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
 
-      .suggested-label {
-        font-size: 12px;
-        color: rgba(0,0,0,0.54);
-        margin-right: 4px;
-      }
+          .suggested-label {
+            font-size: 11px;
+            color: rgba(0,0,0,0.5);
+            margin-bottom: 4px;
+          }
 
-      .question-chip {
-        font-size: 12px;
-        height: auto;
-        white-space: normal;
-        text-align: left;
-        line-height: 1.3;
-        padding: 6px 12px;
+          .suggested-question-btn {
+            font-size: 12px;
+            height: auto;
+            white-space: normal;
+            text-align: left;
+            line-height: 1.4;
+            padding: 6px 12px;
+            border-radius: 8px;
+          }
+        }
       }
     }
 
@@ -121,13 +135,26 @@
 
       button[mat-fab] { width: 40px; height: 40px; min-width: 40px; flex-shrink: 0; }
     }
+
+    .scroll-bottom-btn {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+    }
   }
 
   .tasks-panel {
     width: 280px;
+    min-width: 280px;
     flex-shrink: 0;
     overflow-y: auto;
     background-color: #fafafa;
+    border-left: 1px solid rgba(0,0,0,0.12);
   }
 }
 
