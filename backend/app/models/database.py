@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey, Integer
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.ext.asyncio import async_sessionmaker
@@ -57,6 +57,7 @@ class Message(Base):
     content = Column(Text, nullable=False)
     sources = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    sequence = Column(Integer, default=0)
 
     session = relationship("Session", back_populates="messages")
 
