@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,8 @@ export class ChatContainerComponent {
 
   selectedSessionId = signal<string | null>(null);
 
+  @ViewChild(SessionListComponent) sessionListRef!: SessionListComponent;
+  @ViewChild(SessionViewComponent) sessionViewRef!: SessionViewComponent;
   constructor(private dialog: MatDialog) {}
 
   onSessionSelected(sessionId: string): void {
@@ -32,15 +34,26 @@ export class ChatContainerComponent {
   }
 
   onCreateSession(): void {
-    const dialogRef = this.dialog.open(CreateSessionComponent, {
-      width: '450px',
-      disableClose: false
-    });
+  const dialogRef = this.dialog.open(CreateSessionComponent, {
+    width: '500px',
+    disableClose: false
+  });
 
-    dialogRef.afterClosed().subscribe(session => {
-      if (session) {
-        this.selectedSessionId.set(session.id);
-      }
-    });
+  dialogRef.afterClosed().subscribe(result => {
+  if (result && result.session) {
+    this.selectedSessionId.set(result.session.id);
+    this.sessionListRef?.loadSessions();
+    
+    // Si es una simulación, activar el comportamiento proactivo
+    if (result.simulationResult) {
+      // Pequeño delay para que el SessionViewComponent se inicialice
+      setTimeout(() => {
+        this.sessionViewRef?.onDocumentUploaded(result.simulationResult.filename);
+      }, 500);
+    }
   }
+});
+}
+
+  
 }

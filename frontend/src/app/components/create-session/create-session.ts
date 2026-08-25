@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
@@ -16,7 +17,8 @@ import { ChatService } from '../../services/chat.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatRadioModule
   ],
   templateUrl: './create-session.html',
   styleUrl: './create-session.scss'
@@ -25,6 +27,8 @@ export class CreateSessionComponent {
 
   title = signal<string>('');
   patientIdentifier = signal<string>('');
+  mode = signal<'import' | 'simulate'>('import');
+  simulationDescription = signal<string>('');
   isCreating = signal<boolean>(false);
 
   constructor(
@@ -34,14 +38,30 @@ export class CreateSessionComponent {
 
   create(): void {
     if (!this.title().trim()) return;
+    if (this.mode() === 'simulate' && !this.simulationDescription().trim()) return;
 
     this.isCreating.set(true);
+
     this.chatService.createSession(
       this.title().trim(),
       this.patientIdentifier().trim() || undefined
     ).subscribe({
       next: (session) => {
-        this.dialogRef.close(session);
+        if (this.mode() === 'simulate') {
+          this.chatService.simulateCase(
+            this.simulationDescription().trim(),
+            session.id
+          ).subscribe({
+            next: (result) => {
+              this.dialogRef.close({ session, simulationResult: result });
+            },
+            error: () => {
+              this.isCreating.set(false);
+            }
+          });
+        } else {
+          this.dialogRef.close({ session, simulationResult: null });
+        }
       },
       error: () => {
         this.isCreating.set(false);
