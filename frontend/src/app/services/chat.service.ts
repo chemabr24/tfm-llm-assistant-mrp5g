@@ -90,4 +90,10 @@ export class ChatService {
       session_id: sessionId
     });
   }
+
+  transcribeAudio(audioBlob: Blob): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'audio.webm');
+    return this.http.post(`${this.apiUrl}/transcribe`, formData);
+  }
 }

@@ -6,6 +6,7 @@ from app.routers.upload import router as upload_router
 from app.routers.chat import router as chat_router
 from app.models.database import init_db
 from app.routers.sessions import router as sessions_router
+from app.routers.voice import router as voice_router
 
 load_dotenv()
 
@@ -36,3 +37,4 @@ async def health_check():
 app.include_router(upload_router)
 app.include_router(chat_router)
 app.include_router(sessions_router)
+app.include_router(voice_router)

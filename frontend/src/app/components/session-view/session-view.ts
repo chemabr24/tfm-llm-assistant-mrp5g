@@ -12,6 +12,7 @@ import { ChatService } from '../../services/chat.service';
 import { TaskListComponent } from '../task-list/task-list';
 import { UploadComponent } from '../upload/upload';
 import { Message, Source, Task, HistoryMessage, SessionDetail } from '../../models/chat.models';
+import { VoiceRecorderComponent } from '../voice-recorder/voice-recorder';
 
 @Component({
   selector: 'app-session-view',
@@ -27,7 +28,8 @@ import { Message, Source, Task, HistoryMessage, SessionDetail } from '../../mode
     MatChipsModule,
     MarkdownComponent,
     TaskListComponent,
-    UploadComponent
+    UploadComponent,
+    VoiceRecorderComponent
   ],
   templateUrl: './session-view.html',
   styleUrl: './session-view.scss'
@@ -79,6 +81,8 @@ export class SessionViewComponent implements OnInit, OnChanges {
               sources: m.sources || []
             }));
             this.messages.set(msgs);
+            // Scroll al final después de cargar los mensajes
+            setTimeout(() => this.scrollToBottom(), 100);
           }
         }
       }
@@ -259,5 +263,9 @@ export class SessionViewComponent implements OnInit, OnChanges {
       this.messagesContainer.nativeElement.scrollTop =
         this.messagesContainer.nativeElement.scrollHeight;
     }
+  }
+
+  onTranscriptionReady(text: string): void {
+    this.userInput.set(text);
   }
 }
