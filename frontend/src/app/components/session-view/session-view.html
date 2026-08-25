@@ -84,6 +84,10 @@
         </textarea>
       </mat-form-field>
 
+      <app-voice-recorder
+        (transcriptionReady)="onTranscriptionReady($event)">
+      </app-voice-recorder>
+
       <button
         mat-fab
         color="primary"

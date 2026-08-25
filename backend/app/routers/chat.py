@@ -83,11 +83,19 @@ async def persist_messages(user_query: str, full_content: list, sources_data: li
     assistant_response = "".join(full_content)
 
     async with AsyncSessionLocal() as db:
+        # Obtener el último sequence
+        from sqlalchemy import select, func
+        result = await db.execute(
+            select(func.max(Message.sequence)).where(Message.session_id == session_id)
+        )
+        max_seq = result.scalar() or 0
+        
         user_message = Message(
             id=str(uuid.uuid4()),
             session_id=session_id,
             role="user",
-            content=user_query
+            content=user_query,
+            sequence=max_seq + 1
         )
         db.add(user_message)
 
@@ -96,7 +104,8 @@ async def persist_messages(user_query: str, full_content: list, sources_data: li
             session_id=session_id,
             role="assistant",
             content=assistant_response,
-            sources=json.dumps(sources_data)
+            sources=json.dumps(sources_data),
+            sequence=max_seq + 2
         )
         db.add(assistant_message)
         await db.commit()

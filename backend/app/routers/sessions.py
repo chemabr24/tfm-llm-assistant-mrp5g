@@ -80,7 +80,7 @@ async def get_session(session_id: str):
         messages_result = await db.execute(
             select(Message)
             .where(Message.session_id == session_id)
-            .order_by(Message.created_at.asc(), Message.id.asc())
+            .order_by(Message.sequence.asc())
         )
         messages = messages_result.scalars().all()
 
