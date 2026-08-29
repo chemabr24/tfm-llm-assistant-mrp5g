@@ -8,6 +8,7 @@ from app.models.database import init_db
 from app.routers.sessions import router as sessions_router
 from app.routers.voice import router as voice_router
 from app.routers.simulate import router as simulate_router
+from app.routers.reminders import router as reminders_router
 
 load_dotenv()
 
@@ -40,3 +41,4 @@ app.include_router(chat_router)
 app.include_router(sessions_router)
 app.include_router(voice_router)
 app.include_router(simulate_router)
+app.include_router(reminders_router)
