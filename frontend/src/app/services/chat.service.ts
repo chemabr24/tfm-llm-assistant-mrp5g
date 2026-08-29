@@ -96,4 +96,12 @@ export class ChatService {
     formData.append('file', audioBlob, 'audio.webm');
     return this.http.post(`${this.apiUrl}/transcribe`, formData);
   }
+
+  simulateCase(description: string, sessionId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/simulate`, {
+    description,
+    session_id: sessionId
+  });
+}
+  
 }
