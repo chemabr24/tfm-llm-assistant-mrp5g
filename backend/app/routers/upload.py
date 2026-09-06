@@ -1,5 +1,8 @@
+import mimetypes
+import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException, Query
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from app.services.document_service import DocumentService
 from app.services.embedding_service import EmbeddingService
@@ -12,6 +15,8 @@ document_service = DocumentService()
 embedding_service = EmbeddingService()
 qdrant_service = QdrantService(embedding_dimension=embedding_service.dimension)
 
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 @router.post("/upload")
 async def upload_document(
@@ -24,8 +29,8 @@ async def upload_document(
     
     Devuelve el número de chunks indexados y el nombre del archivo.
     """
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Solo se permiten archivos PDF.")
+    if not file.filename.endswith(".pdf") and not file.filename.endswith(".txt"):
+        raise HTTPException(status_code=400, detail="Solo se permiten archivos PDF o TXT.")
 
     # Verificar que la sesión existe y no está eliminada
     async with AsyncSessionLocal() as db:
@@ -40,6 +45,12 @@ async def upload_document(
             raise HTTPException(status_code=404, detail="Sesión no encontrada.")
 
     file_bytes = await file.read()
+
+    # Guardar archivo en disco
+    file_path = os.path.join(UPLOAD_DIR, f"{uuid.uuid4().hex}_{file.filename}")
+    with open(file_path, "wb") as f:
+        f.write(file_bytes)
+
     chunks = document_service.process_pdf(file_bytes, filename=file.filename)
 
     if not chunks:
@@ -59,6 +70,7 @@ async def upload_document(
             id=str(uuid.uuid4()),
             session_id=session_id,
             filename=file.filename,
+            file_path=file_path,
             chunk_count=str(len(chunks))
         )
         db.add(document)
@@ -70,3 +82,31 @@ async def upload_document(
         "chunks_indexados": len(chunks),
         "mensaje": f"Documento '{file.filename}' indexado correctamente con {len(chunks)} chunks."
     }
+
+@router.get("/documents/{document_id}/file")
+async def get_document_file(document_id: str):
+    """
+    Sirve el archivo de un documento para que pueda abrirse en el navegador.
+    """
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(Document).where(
+                Document.id == document_id,
+                Document.is_deleted == False
+            )
+        )
+        document = result.scalar_one_or_none()
+        if not document:
+            raise HTTPException(status_code=404, detail="Documento no encontrado.")
+        if not document.file_path or not os.path.exists(document.file_path):
+            raise HTTPException(status_code=404, detail="Archivo no encontrado en el servidor.")
+
+    media_type, _ = mimetypes.guess_type(document.filename)
+    media_type = media_type or "application/octet-stream"
+
+    return FileResponse(
+        path=document.file_path,
+        filename=document.filename,
+        media_type=media_type,
+        headers={"Content-Disposition": f"inline; filename={document.filename}"}
+    )

@@ -1,7 +1,14 @@
 <div class="session-view-wrapper">
-
   <!-- Panel central: chat -->
   <div class="chat-panel">
+    @if (session()) {
+      <div class="session-header">
+        <span class ="session-title-text">{{ session()?.title }}</span>
+        @if (session()?.patient_identifier) {
+          <span class="session-patient-badge">{{ session()?.patient_identifier }}</span>
+        }
+      </div>
+    }
     <div class="messages-container" #messagesContainer (scroll)="onMessagesScroll($event)">
       @for (message of messages(); track $index) {
         @if (message && message.role) {

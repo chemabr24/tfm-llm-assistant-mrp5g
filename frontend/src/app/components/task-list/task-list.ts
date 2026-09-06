@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ChatService } from '../../services/chat.service';
 import { Task, Document } from '../../models/chat.models';
 
@@ -19,7 +20,8 @@ import { Task, Document } from '../../models/chat.models';
     MatButtonModule,
     MatTooltipModule,
     MatChipsModule,
-    MatDividerModule
+    MatDividerModule,
+    MatButtonToggleModule
   ],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss'
@@ -27,7 +29,7 @@ import { Task, Document } from '../../models/chat.models';
 export class TaskListComponent {
 
   @Input() set tasks(value: Task[]) {
-    this._tasks.set(value);
+    this._allTasks.set(value);
   }
 
   @Input() set documents(value: Document[]) {
@@ -36,15 +38,26 @@ export class TaskListComponent {
 
   @Output() taskUpdated = new EventEmitter<void>();
 
-  _tasks = signal<Task[]>([]);
+  _allTasks = signal<Task[]>([]);
   _documents = signal<Document[]>([]);
+  activeFilter = signal<string>('pending');
+
+  filteredTasks() {
+    return this._allTasks().filter(t => t.status === this.activeFilter());
+  }
 
   constructor(private chatService: ChatService) {}
+
+  setFilter(filter: string): void {
+    this.activeFilter.set(filter);
+  }
 
   completeTask(taskId: string): void {
     this.chatService.updateTask(taskId, 'completed').subscribe({
       next: () => {
-        this._tasks.update(tasks => tasks.filter(t => t.id !== taskId));
+        this._allTasks.update(tasks =>
+          tasks.map(t => t.id === taskId ? { ...t, status: 'completed' } : t)
+        );
         this.taskUpdated.emit();
       }
     });
@@ -53,9 +66,16 @@ export class TaskListComponent {
   archiveTask(taskId: string): void {
     this.chatService.updateTask(taskId, 'archived').subscribe({
       next: () => {
-        this._tasks.update(tasks => tasks.filter(t => t.id !== taskId));
+        this._allTasks.update(tasks =>
+          tasks.map(t => t.id === taskId ? { ...t, status: 'archived' } : t)
+        );
         this.taskUpdated.emit();
       }
     });
+  }
+
+  openDocument(documentId: string): void {
+    const url = this.chatService.getDocumentUrl(documentId);
+    window.open(url, '_blank');
   }
 }

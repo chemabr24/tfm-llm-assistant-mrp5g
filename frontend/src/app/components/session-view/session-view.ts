@@ -65,6 +65,7 @@ export class SessionViewComponent implements OnInit, OnChanges {
   }
 
   loadSession(): void {
+    if(this.isLoading()) return;
     this.chatService.getSession(this.sessionId).subscribe({
       next: (session: SessionDetail) => {
         this.session.set(session);
@@ -177,7 +178,7 @@ export class SessionViewComponent implements OnInit, OnChanges {
       complete: () => {
         this.updateMessageAtIndex(streamingIndex, fullContent, sources, false);
         this.isLoading.set(false);
-        setTimeout(() => this.loadSession(), 2000);
+        setTimeout(() => this.loadSession(), 3000);
 
         this.chatService.getSuggestedQuestions(fullContent, this.sessionId).subscribe({
           next: (data) => {
