@@ -40,6 +40,7 @@ class Document(Base):
     id = Column(String, primary_key=True)
     session_id = Column(String, ForeignKey("sessions.id"), nullable=False)
     filename = Column(String(255), nullable=False)
+    file_path = Column(String(500), nullable=True)
     chunk_count = Column(String(10), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_deleted = Column(Boolean, default=False)

@@ -98,10 +98,14 @@ export class ChatService {
   }
 
   simulateCase(description: string, sessionId: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/simulate`, {
-    description,
-    session_id: sessionId
-  });
-}
+    return this.http.post(`${this.apiUrl}/simulate`, {
+      description,
+      session_id: sessionId
+    });
+  }
+
+  getDocumentUrl(documentId: string): string {
+    return `${this.apiUrl}/documents/${documentId}/file`;
+  }
   
 }

@@ -1,3 +1,4 @@
+import os
 import uuid
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -8,6 +9,9 @@ from app.models.database import AsyncSessionLocal, Session, Document
 from sqlalchemy import select
 
 router = APIRouter(prefix="/api", tags=["simulador"])
+
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 embedding_service = EmbeddingService()
 qdrant_service = QdrantService(embedding_dimension=embedding_service.dimension)
@@ -61,6 +65,9 @@ Genera el caso clínico de forma detallada y realista, como si fuera un informe 
             temperature=0.7
         )
         case_text = response.choices[0].message.content.strip()
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(case_text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al generar el caso clínico: {str(e)}")
 
@@ -94,6 +101,7 @@ Genera el caso clínico de forma detallada y realista, como si fuera un informe 
             id=str(uuid.uuid4()),
             session_id=request.session_id,
             filename=filename,
+            file_path=file_path,
             chunk_count=str(len(chunks))
         )
         db.add(document)

@@ -58,4 +58,9 @@ export class TaskListComponent {
       }
     });
   }
+
+  openDocument(documentId: string): void {
+    const url = this.chatService.getDocumentUrl(documentId);
+    window.open(url, '_blank');
+  }
 }

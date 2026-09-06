@@ -56,7 +56,10 @@
       }
 
       @for (doc of _documents(); track doc.id) {
-        <div class="task-item">
+        <div class="task-item"
+          style="cursor: pointer;"
+          (click)="openDocument(doc.id)"
+          matTooltip="Abrir documento">
           <mat-icon class="doc-icon">picture_as_pdf</mat-icon>
           <div class="doc-info">
             <span class="task-content">{{ doc.filename }}</span>
