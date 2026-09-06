@@ -86,7 +86,7 @@ async def get_session(session_id: str):
 
         tasks_result = await db.execute(
             select(Task)
-            .where(Task.session_id == session_id, Task.status == "pending")
+            .where(Task.session_id == session_id)
             .order_by(Task.created_at.asc())
         )
         tasks = tasks_result.scalars().all()

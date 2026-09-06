@@ -101,4 +101,25 @@
     font-size: 11px;
     color: rgba(0,0,0,0.54);
   }
+
+  .filter-toggle {
+  width: 100%;
+  margin-bottom: 8px;
+  
+    ::ng-deep .mat-button-toggle {
+      flex: 1;
+      font-size: 10px;
+    }
+    ::ng-deep .mat-button-toggle-button {
+      padding: 0 2px;
+    }
+  }
+
+  ::ng-deep .mat-button-toggle-checked .mat-button-toggle-button::before {
+    display: none;
+  }
+
+  ::ng-deep .mat-pseudo-checkbox {
+    display: none !important;
+  }
 }
