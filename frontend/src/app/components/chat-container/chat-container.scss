@@ -11,12 +11,18 @@
     color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     h1 { margin: 0; font-size: 18px; font-weight: 500; }
     p { margin: 2px 0 0; font-size: 12px; opacity: 0.85; }
-  }
 
-  .main-content {
+    .header-actions {
+      button { color: white; }
+    }
+  }
+    .main-content {
     display: flex;
     flex: 1;
     overflow: hidden;

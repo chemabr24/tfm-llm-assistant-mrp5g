@@ -10,12 +10,14 @@ from app.routers.voice import router as voice_router
 from app.routers.simulate import router as simulate_router
 from app.routers.reminders import router as reminders_router
 from app.routers.auth import router as auth_router
+from app.services.scheduler_service import start_scheduler
 
 load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    start_scheduler()
     yield
 
 app = FastAPI(

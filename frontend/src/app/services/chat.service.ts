@@ -119,4 +119,8 @@ export class ChatService {
     return this.http.post(`${this.apiUrl}/auth/magic-link`, { email });
   }
 
+  updateProfile(userId: string, preferences: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/auth/users/${userId}/profile`, preferences);
+  }
+
 }

@@ -6,9 +6,11 @@ import { ChatContainerComponent } from './components/chat-container/chat-contain
 import { Verify } from './components/auth/verify/verify';
 import { Login } from './components/auth/login/login';
 import { authGuard } from './guards/auth.guard';
+import { ProfileComponent } from './components/profile/profile';
 
 const routes: Routes = [
   { path: '', component: ChatContainerComponent, canActivate: [authGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'auth/verify', component: Verify },
   { path: 'auth/login', component: Login },
   { path: '**', redirectTo: '' }

@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SessionListComponent } from '../session-list/session-list';
 import { SessionViewComponent } from '../session-view/session-view';
 import { CreateSessionComponent } from '../create-session/create-session';
+import { Router, RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chat-container',
@@ -16,7 +18,9 @@ import { CreateSessionComponent } from '../create-session/create-session';
     MatButtonModule,
     MatIconModule,
     SessionListComponent,
-    SessionViewComponent
+    SessionViewComponent,
+    MatTooltipModule,
+    RouterModule
   ],
   templateUrl: './chat-container.html',
   styleUrl: './chat-container.scss'
@@ -27,7 +31,7 @@ export class ChatContainerComponent {
 
   @ViewChild(SessionListComponent) sessionListRef!: SessionListComponent;
   @ViewChild(SessionViewComponent) sessionViewRef!: SessionViewComponent;
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private router: Router) {}
 
   onSessionSelected(sessionId: string): void {
     this.selectedSessionId.set(sessionId);
@@ -59,5 +63,8 @@ export class ChatContainerComponent {
     });
   }
 
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
   
 }
