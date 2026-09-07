@@ -12,6 +12,7 @@ class CreateSessionRequest(BaseModel):
     """Modelo para crear una sesión."""
     title: str
     patient_identifier: str | None = None
+    user_id: str | None = None
 
 
 class UpdateTaskRequest(BaseModel):
@@ -28,7 +29,8 @@ async def create_session(request: CreateSessionRequest):
         session = Session(
             id=str(uuid.uuid4()),
             title=request.title,
-            patient_identifier=request.patient_identifier
+            patient_identifier=request.patient_identifier,
+            user_id=request.user_id
         )
         db.add(session)
         await db.commit()
@@ -42,13 +44,14 @@ async def create_session(request: CreateSessionRequest):
 
 
 @router.get("")
-async def list_sessions():
+async def list_sessions(user_id: str | None = None):
     """Lista todas las sesiones activas ordenadas por fecha de creación."""
     async with AsyncSessionLocal() as db:
+        query = select(Session).where(Session.is_deleted == False)
+        if user_id:
+            query = query.where(Session.user_id == user_id)
         result = await db.execute(
-            select(Session)
-            .where(Session.is_deleted == False)
-            .order_by(Session.created_at.desc())
+            query.order_by(Session.created_at.desc())
         )
         sessions = result.scalars().all()
         return [

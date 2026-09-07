@@ -57,7 +57,8 @@ El caso clínico debe incluir las siguientes secciones:
 9. Seguimiento recomendado
 
 Genera el caso clínico de forma detallada y realista, como si fuera un informe médico real. Todos los datos son completamente ficticios."""
-
+    filename = f"caso_simulado_{uuid.uuid4().hex[:8]}.txt"
+    
     try:
         response = rag_service.llm_client.chat.completions.create(
             model=rag_service.model,
@@ -69,9 +70,11 @@ Genera el caso clínico de forma detallada y realista, como si fuera un informe 
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(case_text)
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error al generar el caso clínico: {str(e)}")
 
-    filename = f"caso_simulado_{uuid.uuid4().hex[:8]}.txt"
+    
     chunks = []
     words = case_text.split()
     chunk_size = 512

@@ -8,6 +8,11 @@
 
   <mat-divider></mat-divider>
 
+  @if (isLoading()) {
+    <div class="loading-sessions">
+      <mat-spinner diameter="24"></mat-spinner>
+    </div>
+  }
   <mat-nav-list>
     @for (session of sessions(); track session.id) {
       <mat-list-item

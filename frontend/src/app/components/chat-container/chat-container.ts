@@ -34,26 +34,30 @@ export class ChatContainerComponent {
   }
 
   onCreateSession(): void {
-  const dialogRef = this.dialog.open(CreateSessionComponent, {
-    width: '500px',
-    disableClose: false
-  });
+    const dialogRef = this.dialog.open(CreateSessionComponent, {
+      width: '500px',
+      disableClose: true
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-  if (result && result.session) {
-    this.selectedSessionId.set(result.session.id);
-    this.sessionListRef?.loadSessions();
-    
-    // Si es una simulación, activar el comportamiento proactivo
-    if (result.simulationResult) {
-      // Pequeño delay para que el SessionViewComponent se inicialice
+    dialogRef.afterClosed().subscribe(result => {
+      // Siempre recargar la lista al cerrar
       setTimeout(() => {
-        this.sessionViewRef?.onDocumentUploaded(result.simulationResult.filename);
+        this.sessionListRef?.loadSessions();
       }, 500);
-    }
+      if (result && result.session) {
+        this.selectedSessionId.set(result.session.id);
+        this.sessionListRef?.loadSessions();
+        
+        // Si es una simulación, activar el comportamiento proactivo
+        if (result.simulationResult) {
+          // Pequeño delay para que el SessionViewComponent se inicialice
+          setTimeout(() => {
+            this.sessionViewRef?.onDocumentUploaded(result.simulationResult.filename);
+          }, 500);
+        }
+      }
+    });
   }
-});
-}
 
   
 }

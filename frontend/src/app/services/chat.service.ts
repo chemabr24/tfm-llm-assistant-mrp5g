@@ -15,14 +15,17 @@ export class ChatService {
   // ─── SESIONES ────────────────────────────────────────────────────────────
 
   createSession(title: string, patientIdentifier?: string): Observable<any> {
+    const userId = localStorage.getItem('user_id');
     return this.http.post(`${this.apiUrl}/sessions`, {
       title,
-      patient_identifier: patientIdentifier
+      patient_identifier: patientIdentifier,
+      user_id: userId
     });
   }
 
   listSessions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/sessions`);
+    const userId = localStorage.getItem('user_id');
+    return this.http.get<any[]>(`${this.apiUrl}/sessions?user_id=${userId}`);
   }
 
   getSession(sessionId: string): Observable<any> {
@@ -108,4 +111,12 @@ export class ChatService {
     return `${this.apiUrl}/documents/${documentId}/file`;
   }
   
+  verifyMagicLink(token: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/verify`, { token });
+  }
+
+  requestMagicLink(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/magic-link`, { email });
+  }
+
 }

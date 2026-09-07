@@ -83,16 +83,14 @@ DOCUMENTACIÓN DISPONIBLE:
             if delta.content:
                 yield delta.content
 
-    def generate_proactive_intro(self, filename: str) -> str:
+    def generate_proactive_intro(self, filename: str, session_id: str = None) -> str:
         """
         Genera un resumen proactivo al subir un documento.
-        
-        El asistente presenta el documento y sugiere preguntas
-        sin que el médico haya escrito nada.
         """
         chunks = self.qdrant_service.search(
             self.embedding_service.embed_text("resumen contenido principal"),
-            top_k=3
+            top_k=3,
+            session_id=session_id
         )
 
         context = "\n\n".join([c['text'] for c in chunks])

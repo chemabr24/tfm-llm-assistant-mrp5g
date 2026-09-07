@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, Text, Boolean, DateTime, ForeignKey, JSON, Integer
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.ext.asyncio import async_sessionmaker
@@ -17,17 +17,44 @@ AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 Base = declarative_base()
 
 
+class User(Base):
+    """Modelo de usuario del sistema."""
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True)
+    email = Column(String(255), nullable=False, unique=True)
+    preferences = Column(JSON, nullable=True, default={})
+    created_at = Column(DateTime, default=datetime.utcnow)
+    is_active = Column(Boolean, default=True)
+
+    sessions = relationship("Session", back_populates="user")
+
+
+class MagicLink(Base):
+    """Modelo de magic link para autenticación."""
+    __tablename__ = "magic_links"
+
+    id = Column(String, primary_key=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    token = Column(String(255), nullable=False, unique=True)
+    expires_at = Column(DateTime, nullable=False)
+    used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class Session(Base):
     """Modelo de sesión médica."""
     __tablename__ = "sessions"
 
     id = Column(String, primary_key=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
     title = Column(String(255), nullable=False)
     patient_identifier = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_deleted = Column(Boolean, default=False)
 
+    user = relationship("User", back_populates="sessions")
     documents = relationship("Document", back_populates="session", cascade="all, delete-orphan")
     messages = relationship("Message", back_populates="session", cascade="all, delete-orphan")
     tasks = relationship("Task", back_populates="session", cascade="all, delete-orphan")
