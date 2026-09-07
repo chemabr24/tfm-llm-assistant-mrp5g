@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { ChatService } from '../../services/chat.service';
 import { Session } from '../../models/chat.models';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-session-list',
@@ -17,7 +18,8 @@ import { Session } from '../../models/chat.models';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './session-list.html',
   styleUrl: './session-list.scss'
@@ -30,6 +32,8 @@ export class SessionListComponent implements OnInit {
   sessions = signal<Session[]>([]);
   selectedSessionId = signal<string | null>(null);
 
+  isLoading = signal<boolean>(false);
+
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
@@ -37,9 +41,16 @@ export class SessionListComponent implements OnInit {
   }
 
   loadSessions(): void {
+    this.isLoading.set(true);
     this.chatService.listSessions().subscribe({
-      next: (sessions) => this.sessions.set(sessions),
-      error: () => console.error('Error al cargar sesiones')
+      next: (sessions) => {
+        this.sessions.set(sessions);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        console.error('Error al cargar sesiones');
+        this.isLoading.set(false);
+      }
     });
   }
 

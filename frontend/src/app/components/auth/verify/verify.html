@@ -1,0 +1,15 @@
+<div class="verify-container">
+  @if (isVerifying()) {
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Verificando acceso...</p>
+  }
+
+  @if (error()) {
+    <mat-icon style="font-size: 48px; color: #e53935;">error</mat-icon>
+    <h2>Enlace no válido</h2>
+    <p>{{ error() }}</p>
+    <button mat-flat-button color="primary" (click)="goToLogin()">
+      Volver al inicio
+    </button>
+  }
+</div>

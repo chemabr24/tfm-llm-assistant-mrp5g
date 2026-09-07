@@ -169,7 +169,7 @@ async def proactive_intro(request: ProactiveRequest):
         if not session:
             raise HTTPException(status_code=404, detail="Sesión no encontrada.")
 
-    intro = rag_service.generate_proactive_intro(request.filename)
+    intro = rag_service.generate_proactive_intro(request.filename, request.session_id)
 
     async with AsyncSessionLocal() as db:
         message = Message(

@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SessionListComponent } from '../session-list/session-list';
 import { SessionViewComponent } from '../session-view/session-view';
 import { CreateSessionComponent } from '../create-session/create-session';
+import { Router, RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-chat-container',
@@ -16,7 +18,9 @@ import { CreateSessionComponent } from '../create-session/create-session';
     MatButtonModule,
     MatIconModule,
     SessionListComponent,
-    SessionViewComponent
+    SessionViewComponent,
+    MatTooltipModule,
+    RouterModule
   ],
   templateUrl: './chat-container.html',
   styleUrl: './chat-container.scss'
@@ -27,33 +31,40 @@ export class ChatContainerComponent {
 
   @ViewChild(SessionListComponent) sessionListRef!: SessionListComponent;
   @ViewChild(SessionViewComponent) sessionViewRef!: SessionViewComponent;
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog, private router: Router) {}
 
   onSessionSelected(sessionId: string): void {
     this.selectedSessionId.set(sessionId);
   }
 
   onCreateSession(): void {
-  const dialogRef = this.dialog.open(CreateSessionComponent, {
-    width: '500px',
-    disableClose: false
-  });
+    const dialogRef = this.dialog.open(CreateSessionComponent, {
+      width: '500px',
+      disableClose: true
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-  if (result && result.session) {
-    this.selectedSessionId.set(result.session.id);
-    this.sessionListRef?.loadSessions();
-    
-    // Si es una simulación, activar el comportamiento proactivo
-    if (result.simulationResult) {
-      // Pequeño delay para que el SessionViewComponent se inicialice
+    dialogRef.afterClosed().subscribe(result => {
+      // Siempre recargar la lista al cerrar
       setTimeout(() => {
-        this.sessionViewRef?.onDocumentUploaded(result.simulationResult.filename);
+        this.sessionListRef?.loadSessions();
       }, 500);
-    }
+      if (result && result.session) {
+        this.selectedSessionId.set(result.session.id);
+        this.sessionListRef?.loadSessions();
+        
+        // Si es una simulación, activar el comportamiento proactivo
+        if (result.simulationResult) {
+          // Pequeño delay para que el SessionViewComponent se inicialice
+          setTimeout(() => {
+            this.sessionViewRef?.onDocumentUploaded(result.simulationResult.filename);
+          }, 500);
+        }
+      }
+    });
   }
-});
-}
 
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
   
 }
