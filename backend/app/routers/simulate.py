@@ -1,4 +1,5 @@
 import os
+import re
 import uuid
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -22,6 +23,16 @@ class SimulateRequest(BaseModel):
     """Modelo para la petición de simulación de caso clínico."""
     description: str
     session_id: str
+
+def _safe_filename(patient_identifier: str | None, session_title: str | None, session_id: str) -> str:
+    """Genera un nombre de fichero legible y único: la parte legible viene del
+    identificador de paciente o, en su defecto, del título de sesión; la unicidad
+    la garantiza siempre un fragmento del session_id, que nunca se repite."""
+    candidate = (patient_identifier or "").strip() or (session_title or "").strip() or "caso"
+    slug = re.sub(r'[^A-Za-z0-9_-]', '_', candidate)
+    short_id = session_id.replace("-", "")[:8]
+    return f"caso_clinico_{slug}_{short_id}.txt"
+
 
 
 @router.post("/simulate")
@@ -56,8 +67,21 @@ El caso clínico debe incluir las siguientes secciones:
 8. Plan terapéutico
 9. Seguimiento recomendado
 
-Genera el caso clínico de forma detallada y realista, como si fuera un informe médico real. Todos los datos son completamente ficticios."""
-    filename = f"caso_simulado_{uuid.uuid4().hex[:8]}.txt"
+FORMATO DE SALIDA (muy importante, léelo con atención):
+- Escribe en TEXTO PLANO. Prohibido usar Markdown o HTML: nada de tablas ("|---|"), nada de etiquetas HTML (<p>, <ul>, <li>, <strong>, <br>, etc.), nada de negritas con asteriscos ni almohadillas de encabezado.
+- Cada sección debe ir precedida de su número y título en mayúsculas, seguido de un salto de línea, por ejemplo:
+
+1. DATOS DEL PACIENTE
+Nombre: Juan Pérez García
+Edad: 58 años
+Antecedentes: ...
+
+- Dentro de cada sección, usa frases completas en párrafos normales, o listas con guiones simples ("- ") si es necesario. Nunca uses listas ni tablas en HTML o Markdown.
+- Ni siquiera en los subtítulos de una sección (como "Medicamento" o "Cambios en el estilo de vida") uses asteriscos de énfasis. Escríbelos como texto normal seguido de dos puntos.
+- El resultado debe leerse igual de bien en un editor de texto plano que en cualquier visor, sin depender de ningún renderizador.
+- Genera el caso de forma detallada y realista, como si fuera un informe médico real. Todos los datos son completamente ficticios."""
+    
+    filename = _safe_filename(session.patient_identifier, session.title, request.session_id)
     
     try:
         response = rag_service.llm_client.chat.completions.create(
