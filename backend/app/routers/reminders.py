@@ -7,9 +7,14 @@ router = APIRouter(prefix="/api", tags=["recordatorios"])
 @router.post("/reminders/send")
 async def send_reminders():
     """
-    Envía recordatorios de tareas pendientes a todos los usuarios activos.
-    Útil para pruebas manuales; en producción se ejecuta automáticamente
-    según la periodicidad configurada en el perfil de cada usuario.
+    Fuerza el envío de recordatorios a todos los usuarios activos
+    que tengan tareas pendientes, independientemente de su
+    periodicidad configurada.
+
+    Endpoint destinado a pruebas manuales.
     """
-    await run_scheduled_reminders()
-    return {"mensaje": "Recordatorios enviados correctamente a todos los usuarios con tareas pendientes."}
+    await run_scheduled_reminders(force=True)
+
+    return {
+        "mensaje": "Recordatorios procesados correctamente."
+    }
