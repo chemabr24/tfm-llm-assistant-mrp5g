@@ -23,7 +23,7 @@ class User(Base):
 
     id = Column(String, primary_key=True)
     email = Column(String(255), nullable=False, unique=True)
-    preferences = Column(JSON, nullable=True, default={})
+    preferences = Column(JSON, nullable=True, default=dict)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_active = Column(Boolean, default=True)
 
