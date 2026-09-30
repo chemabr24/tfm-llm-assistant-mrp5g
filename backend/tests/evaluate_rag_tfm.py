@@ -40,7 +40,7 @@ SESSION_ID = "4fc0b7b8-6693-4d09-bbb4-ab9674e10220"
 
 TOP_K = 5
 HTTP_TIMEOUT = 120.0
-RUN_END_TO_END = False
+RUN_END_TO_END = True
 
 OUTPUT_DIR = Path("tests/results_tfm")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

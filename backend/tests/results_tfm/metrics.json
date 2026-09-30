@@ -11,15 +11,52 @@
     "precision_at_5": 0.47000000000000003,
     "latency_seconds": {
       "n": 20,
-      "mean": 0.12319938502041623,
-      "median": 0.11599249998107553,
-      "min": 0.0874590000603348,
-      "max": 0.2889414000092074,
-      "p95": 0.1406613149913029,
-      "stdev": 0.04064106273291682
+      "mean": 0.1249564700119663,
+      "median": 0.11257725005270913,
+      "min": 0.09252760000526905,
+      "max": 0.3679029999766499,
+      "p95": 0.155745770072099,
+      "stdev": 0.05876456780884106
     },
     "relevance_method": "Detección por contenido del chunk mediante grupos de evidencia predefinidos; revisar manualmente los fallos."
   },
-  "end_to_end": {},
-  "no_evidence": {}
+  "end_to_end": {
+    "questions": 20,
+    "failures": 2,
+    "completion_rate": 0.9,
+    "relevant_source_hit_rate": 0.95,
+    "answer_length_chars": {
+      "n": 20,
+      "mean": 657.75,
+      "median": 458.0,
+      "min": 150,
+      "max": 2589,
+      "p95": 2402.7999999999997,
+      "stdev": 683.8132151091369
+    },
+    "total_latency_seconds": {
+      "n": 20,
+      "mean": 14.555002345016693,
+      "median": 14.146134550042916,
+      "min": 6.8687764999922365,
+      "max": 24.640099699958228,
+      "p95": 24.620868849952238,
+      "stdev": 6.002777973546397
+    },
+    "failure_definition": "Respuesta vacía, error HTTP/excepción o activación del mensaje controlado de fallback tras dos generaciones fallidas."
+  },
+  "no_evidence": {
+    "questions": 5,
+    "abstention_rate_heuristic": 0.2,
+    "latency_seconds": {
+      "n": 5,
+      "mean": 22.275043920008464,
+      "median": 23.7017640999984,
+      "min": 5.54017529997509,
+      "max": 41.429655399988405,
+      "p95": 38.56184405998792,
+      "stdev": 13.66757677591588
+    },
+    "warning": "La abstención se detecta mediante patrones textuales. Las cinco respuestas deben revisarse manualmente antes de fijar el resultado definitivo."
+  }
 }
