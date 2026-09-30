@@ -26,7 +26,7 @@ class RAGService:
         los fragmentos más similares semánticamente, filtrando
         por sesión si se proporciona session_id.
         """
-        query_embedding = self.embedding_service.embed_text(query)
+        query_embedding = self.embedding_service.embed_text(query, is_query=True)
         chunks = self.qdrant_service.search(query_embedding, top_k=top_k, session_id=session_id)
         return chunks
 
@@ -54,6 +54,9 @@ INSTRUCCIONES:
 - Sé proactivo: al final de cada respuesta sugiere una acción siguiente o una pregunta relacionada relevante.
 - NUNCA diagnostiques ni prescribas de forma autónoma.
 - NUNCA incluyas preguntas sugeridas dentro del texto de tu respuesta. Las preguntas sugeridas se gestionan por separado. Limítate a responder la consulta del médico.
+- Debes proporcionar siempre una respuesta final visible al usuario.
+- No finalices la generación sin escribir una respuesta en el mensaje final.
+- Si la documentación recuperada no permite responder con seguridad, responde explícitamente que la información no está disponible en la documentación.
 
 DOCUMENTACIÓN DISPONIBLE:
 {context}"""
@@ -66,22 +69,111 @@ DOCUMENTACIÓN DISPONIBLE:
 
     def generate_stream(self, messages: list[dict]):
         """
-        Genera la respuesta en streaming token a token.
-        
-        Usa Server-Sent Events (SSE) para enviar cada token
-        al frontend conforme se genera.
+        Genera la respuesta de forma incremental.
+
+        Los fragmentos producidos por el modelo se devuelven progresivamente
+        al cliente mediante una respuesta HTTP en streaming.
+
+        Si el primer intento no produce contenido visible suficiente,
+        se realiza un único reintento con una instrucción más directa.
         """
-        stream = self.llm_client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            stream=True,
-            temperature=0.3  #para respuestas precisas y consistentes
-        )
+
+        MIN_VISIBLE_CHARS = 15
+
+        def create_stream(current_messages, temperature=0.3):
+            return self.llm_client.chat.completions.create(
+                model=self.model,
+                messages=current_messages,
+                stream=True,
+                temperature=temperature
+            )
+
+        # ---------------------------------------------------------
+        # Primer intento
+        # ---------------------------------------------------------
+        stream = create_stream(messages)
+
+        initial_buffer = ""
+        streaming_started = False
 
         for chunk in stream:
+            if not chunk.choices:
+                continue
+
             delta = chunk.choices[0].delta
-            if delta.content:
+
+            if not delta.content:
+                continue
+
+            if not streaming_started:
+                initial_buffer += delta.content
+
+                # Esperamos a tener una respuesta mínimamente útil antes
+                # de empezar a enviarla al cliente.
+                if len(initial_buffer.strip()) >= MIN_VISIBLE_CHARS:
+                    streaming_started = True
+                    yield initial_buffer
+                    initial_buffer = ""
+            else:
                 yield delta.content
+
+        # Si ya hemos generado una respuesta válida, terminamos.
+        if streaming_started:
+            return
+
+        # ---------------------------------------------------------
+        # Segundo intento
+        # ---------------------------------------------------------
+        retry_messages = messages + [
+            {
+                "role": "system",
+                "content": (
+                    "La generación anterior no produjo una respuesta final "
+                    "visible. Responde ahora directamente a la consulta del "
+                    "usuario. Utiliza exclusivamente la documentación "
+                    "proporcionada. No describas tu razonamiento. "
+                    "Si la documentación no contiene información suficiente, "
+                    "indícalo explícitamente."
+                )
+            }
+        ]
+
+        retry_stream = create_stream(
+            retry_messages,
+            temperature=0.1
+        )
+
+        retry_buffer = ""
+        retry_started = False
+
+        for chunk in retry_stream:
+            if not chunk.choices:
+                continue
+
+            delta = chunk.choices[0].delta
+
+            if not delta.content:
+                continue
+
+            if not retry_started:
+                retry_buffer += delta.content
+
+                if len(retry_buffer.strip()) >= MIN_VISIBLE_CHARS:
+                    retry_started = True
+                    yield retry_buffer
+                    retry_buffer = ""
+            else:
+                yield delta.content
+
+        # ---------------------------------------------------------
+        # Si los dos intentos fallan
+        # ---------------------------------------------------------
+        if not retry_started:
+            yield (
+                "No ha sido posible generar una respuesta final a partir de "
+                "la documentación recuperada. Reformule la consulta o revise "
+                "las fuentes asociadas a la sesión."
+            )
 
     def generate_proactive_intro(self, filename: str, session_id: str = None) -> str:
         """
