@@ -1,0 +1,149 @@
+﻿id,category,question,expected_fact,retrieved_pages,relevant_retrieved_pages,retrieval_scores,hit_at_1,hit_at_3,hit_at_5,reciprocal_rank,precision_at_5,retrieval_latency_s,total_latency_s,source_pages_response,relevant_source_hit,generation_failure,answer,manual_grounded_0_2,manual_relevance_0_2,manual_notes
+Q01,clasificacion,¿A partir de qué valores de presión arterial en consulta se define hipertensión según la guía ESC 2024?,Hipertensión: PAS >=140 mmHg o PAD >=90 mmHg en consulta.,1|10|11|21|86,10|21|86,0.90648|0.89991|0.89984|0.89857|0.89853,0,1,1,0.5,0.6,0.2912942999973893,14.659462200012058,1|10|11|21|86,1,0,"Según la Guía ESC 2024, la hipertensión se define en la consulta como una presión arterial sistólica ≥ 140 mmHg o una presión arterial diastólica ≥ 90 mmHg.  
+*(Fuente: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 86)*",,,
+Q02,clasificacion,¿Qué intervalo define la nueva categoría de presión arterial elevada en consulta?,PA elevada: PAS 120-139 mmHg o PAD 70-89 mmHg.,27|11|58|10|28,10|28,0.87920|0.87603|0.87331|0.87324|0.87139,0,0,1,0.25,0.4,0.10089840006548911,9.272431100020185,27|11|58|10|28,1,0,"La nueva categoría de **presión arterial elevada (PA elevada)** en consulta se define como:
+
+- **PA sistólica** de **120‑139 mmHg**  
+  **o**  
+- **PA diastólica** de **70‑89 mmHg**  
+
+*(GPC ESC 2024, página 10; p. 28)*  
+
+**Sugerencia de acción**: Evalúe el riesgo cardiovascular del paciente (por ejemplo",,,
+Q03,medicion,¿Cuál es el umbral de hipertensión cuando la presión arterial se mide en el domicilio mediante AMPA?,AMPA media >=135/85 mmHg.,23|21|24|25|25,21|23,0.88583|0.87816|0.87436|0.87310|0.86826,1,1,1,1.0,0.4,0.11176660005003214,10.129722099984065,23|21|24|25|25,1,0,"El umbral de hipertensión cuando la presión arterial se mide en el domicilio con AMPA es **una media de ≥135 / 85 mmHg** (equivalente a ≥140 / 90 mmHg en la consulta) 【GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 23】.",,,
+Q04,medicion,¿Qué valores de MAPA de 24 horas confirman hipertensión?,MAPA de 24 h >=130/80 mmHg.,24|21|35|25|76,21|24,0.88751|0.87714|0.87511|0.87035|0.86889,1,1,1,1.0,0.4,0.09942779992707074,29.124190200003795,24|21|35|25|76,1,0,"**Valores de MAPA de 24 h que confirman hipertensión (Escalas ESC 2024)**  
+
+|  Medición |  Valor de referencia |  Comentario |
+|-----------|----------------------|-------------|
+| **MAPA 24 h total** | **≥ 130 mmHg / ≥ 80 mmHg** | Cuando el promedio de 24 h supera este límite, se confirma hipertensión. |
+| **MAPA diurna** | **≥ 135 mmHg / ≥ 85 mmHg** | Un promedio diurno por encima de estos valores también indica hipertensión. |
+| **MAPA nocturna** | **≥ 120 mmHg / ≥ 70 mmHg** | El valor nocturno por encima de estos umbrales confirma hipertensión, incluso cuando la media 24 h esté por debajo de 130/80 mmHg. |
+
+> **Fuente:** Guía ESC 2024 sobre el manejo de la presión arterial elevada y la hipertensión – capítulo sobre",,,
+Q05,medicion,¿Cuántas mediciones de presión arterial deben realizarse en consulta y cuál se registra como resultado?,Tres mediciones separadas 1-2 minutos; registrar la media de las dos últimas.,24|25|25|87|26,,0.87783|0.87200|0.87136|0.86827|0.86639,0,0,0,0.0,0.0,0.1128054999280721,9.045083999983035,24|25|25|87|26,0,0,"No se encuentra en la documentación disponible una indicación específica sobre el número exacto de mediciones de presión arterial que deben realizarse en la consulta ni sobre cuál de esas mediciones debe registrarse como resultado. Los fragmentos de la guía que se han revisado (páginas 24, 25 y 26 de *GPC_ESC_2024_PA_elevada_e_hipertension.pdf*) describen la importancia de usar un método estandarizado, medir en ambos brazos, y registrar todas las mediciones, pero no especifican cuántas lecturas se deben tomar ni cuál se debe usar como resultado final.",,,
+Q06,medicion,¿Cómo define la guía la hipotensión ortostática?,Descenso >=20 mmHg PAS y/o >=10 mmHg PAD tras 1 y/o 3 min de bipedestación.,70|96|69|121|27,27|69,0.86290|0.85791|0.85750|0.85700|0.85383,0,1,1,0.3333333333333333,0.4,0.09412569995038211,11.463180900085717,70|96|69|121|27,1,0,"La guía define la hipotensión ortostática como **una caída de la presión arterial (PA) de al menos 20 mm Hg en la PA sistólica y/o de al menos 10 mm Hg en la PA diastólica, evaluada 1 y/o 3 minutos después de la bipedestación**.  
+En otras palabras, cuando al ponerse de pie la PA se reduce en esos valores dentro del primer minuto o en los tres minutos posteriores, se considera hipotensión ortostática.",,,
+Q07,diagnostico,"En un paciente con 145/95 mmHg en consulta, ¿cómo recomienda la guía confirmar el diagnóstico de hipertensión?",Confirmar preferentemente con medición fuera de consulta mediante MAPA o AMPA.,25|35|56|21|36,21|25|35,0.88635|0.88554|0.87456|0.87250|0.87120,1,1,1,1.0,0.6,0.13130739994812757,12.61934229999315,25|35|56|21|36,1,0,"**Confirmar la hipertensión en un paciente con 145/95 mmHg en la consulta**
+
+1. **Mediciones repetidas en la misma consulta**  
+   - Si la presión se encuentra en el rango de 140‑179 / 90‑109 mmHg, la Guía recomienda tomar al menos **otra dos** mediciones consecutivas en el mismo acto asistencial (o hasta tres en total) con el mismo aparato de medición y con la técnica estándar.  
+   - Se debe esperar 1–2 min entre cada lectura y registrar todas las cifras.
+
+2. **Confirmación externa**  
+   - Si después de las mediciones repetidas la presión sigue en el rango de hipertensión, la Guía aconseja confirmar con una evaluación fuera de la consulta:  
+     - **Monitoreo ambulatorio de presión arterial (MAPA)**, de 24 h, o  
+     - **Medición domiciliaria de presión arterial (MDPA)** realizada por el paciente con un dispositivo validado.  
+   - La confirmación se debe hacer **en el plazo de 1–2 semanas** (idealmente antes de un mes) para evitar la sobre‑diagnóstico de hipertensión de “blanco” o la detección temprana de hipertensión oculta.
+
+3. **Evaluación de factores de riesgo**  
+   - Se revisan antecedentes de enfermedad cardiovascular, riesgo de ECV a 10 años y presencia de otras condiciones que requieran una confirmación más urgente.  
+   - En pacientes con riesgo aumentado, se puede acelerar la confirmación (p. ej., con MAPA de inmediato).
+
+En resumen, la guía sugiere que, tras una lectura de 145/95 mmHg, se realicen al menos dos mediciones adicionales en la misma consulta y, en caso de persistir la hipertensión, se confirme con MAPA o MDPA en el plazo de una o dos semanas.",,,
+Q08,cribado,¿Con qué frecuencia se debe considerar el cribado de presión arterial en adultos menores de 40 años y en mayores de 40?,Al menos cada 3 años en <40 y al menos una vez al año en >=40.,33|12|11|25|55,11|12|33|55,0.90380|0.87746|0.87642|0.87351|0.87309,1,1,1,1.0,0.8,0.12486410001292825,19.623657600022852,33|12|11|25|55,1,0,"En la Guía ESC 2024 sobre presión arterial elevada se indica que:
+
+- **Adultos menores de 40 años**: el cribado oportunista de la presión arterial y la hipertensión debe considerarse **al menos cada 3 años**.  
+  (Fuente: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 33)
+
+- **Adultos de 40 años o más**: el cribado oportunista debe realizarse **al menos una vez al año**.  
+  (Fuente: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 11)",,,
+Q09,tratamiento,"¿Cuál es el objetivo recomendado de presión arterial sistólica para la mayoría de pacientes tratados, si se tolera bien?",PAS objetivo 120-129 mmHg si se tolera.,88|58|57|58|89,57|58|89,0.90406|0.89107|0.88794|0.88468|0.88018,0,1,1,0.5,0.8,0.12144470005296171,20.488041799981147,88|58|57|58|89,1,0,"El objetivo de presión arterial sistólica recomendado para la mayoría de los pacientes tratados, siempre que el tratamiento se tolere bien, es **120‑129 mmHg** (con una presión diastólica de 70‑79 mmHg cuando se aplica el rango completo) [Fuente: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 88; página 58].
+
+**Sugerencia**  
+¿Deseas revisar el plan de manejo del estilo de vida o la tolerancia a los fármacos antihipertensivos de tu paciente para asegurar que el objetivo sea alcanzable?",,,
+Q10,tratamiento,¿Qué clases de fármacos se recomiendan como tratamientos antihipertensivos de primera línea?,"IECA, ARA, BCC dihidropiridínicos y diuréticos tiazídicos o similares.",53|15|89|89|90,15|53|90,0.87950|0.87527|0.87356|0.87123|0.86786,1,1,1,1.0,0.6,0.11546889995224774,9.294535799999721,53|15|89|89|90,1,1,No ha sido posible generar una respuesta final a partir de la documentación recuperada. Reformule la consulta o revise las fuentes asociadas a la sesión.,,,
+Q11,estilo_vida,¿Qué cantidad de ejercicio aeróbico semanal recomienda la guía para reducir la presión arterial y el riesgo cardiovascular?,>=150 min/semana de intensidad moderada o 75 min/semana alta.,49|47|65|108|88,49|88,0.87628|0.87145|0.85451|0.85369|0.85356,1,1,1,1.0,0.4,0.13223630003631115,10.566468699951656,49|47|65|108|88,1,0,"**Recomendación de la guía ESC 2024**
+
+Para reducir la presión arterial y el riesgo cardiovascular, la guía indica:
+
+- **Ejercicio aeróbico de intensidad moderada**: al menos **150 min por semana** (aproximadamente **30 min, 5–7 días a la semana**).
+- **Opción alternativa**: **75 min por semana de intensidad vigorosa**, repartidos en **3 sesiones**.
+
+En ambos casos, se aconseja complementar con ejercicio de fuerza (dinámico o isométrico) de intensidad baja o moderada **2–3 veces por semana**.",,,
+Q12,estilo_vida,¿Qué recomienda la guía respecto al consumo de alcohol?,Menos de 14 unidades/semana en varones y 8 en mujeres; preferiblemente evitar alcohol.,50|50|10|88|2,50|88,0.84158|0.83490|0.82391|0.82244|0.82141,1,1,1,1.0,0.6,0.09394990000873804,9.668582999962382,50|50|10|88|2,1,0,"La Guía ESC 2024 recomienda que tanto hombres como mujeres mantengan su consumo de alcohol por debajo del límite superior indicado, es decir, **menos de 100 g de alcohol puro por semana** (aproximadamente 8–14 g por bebida estándar). Además, se sugiere que lo más saludable sea **evitar el consumo de alcohol** siempre que sea posible para lograr los mejores resultados de salud.  
+
+Fuentes:  
+- GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 50  
+- GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 88",,,
+Q13,seguimiento,"Una vez controlada y estable la presión arterial con tratamiento, ¿con qué frecuencia mínima debe considerarse el seguimiento?",Seguimiento de PA y factores de riesgo de ECV al menos una vez al año.,25|60|56|125|27,60,0.86231|0.86084|0.85683|0.85542|0.85235,0,1,1,0.5,0.2,0.11471129988785833,8.523207899997942,25|60|56|125|27,1,1,No ha sido posible generar una respuesta final a partir de la documentación recuperada. Reformule la consulta o revise las fuentes asociadas a la sesión.,,,
+Q14,riesgo,¿Qué umbral de SCORE2 o SCORE2-OP considera la guía como riesgo cardiovascular suficientemente alto en una persona con presión arterial elevada?,Riesgo de ECV a 10 años >=10%.,30|30|11|33|55,11|30|33|55,0.90435|0.89682|0.87983|0.87892|0.87862,1,1,1,1.0,1.0,0.1317514000693336,13.949303400004283,30|30|11|33|55,1,0,"La guía establece que un riesgo cardiovascular a 10 años igual o superior al **10 %** (es decir, una puntuación SCORE2 o SCORE2‑OP ≥ 10 %) constituye un riesgo suficientemente alto en una persona con presión arterial elevada, justificando el inicio de tratamiento antihipertensivo.",,,
+Q15,resistente,¿Qué tratamiento recomienda la guía añadir en la hipertensión resistente no controlada pese al tratamiento de primera línea?,Añadir espironolactona a dosis baja; existen alternativas si no se tolera.,18|6|52|41|89,18|52,0.88209|0.86974|0.86916|0.86616|0.86421,1,1,1,1.0,0.4,0.11448630003724247,17.228179899975657,18|6|52|41|89,1,0,"Para la hipertensión resistente que no se controla con el tratamiento de primera línea, la Guía ESC 2024 recomienda **añadir una dosis baja de espironolactona al régimen existente** (y, si la espironolactona no es tolerada, considerar eplerenona u otros antagonistas de los receptores de mineralocorticoides).  
+Fuentes: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, pág. 18.",,,
+Q16,embarazo,¿Qué cifras de presión arterial pueden indicar una emergencia hipertensiva durante el embarazo?,PAS >=160 mmHg y PAD >=110 mmHg pueden indicar emergencia; >=170/110 se considera emergencia.,118|64|66|16|64,66,0.87786|0.87008|0.86676|0.86597|0.86498,0,1,1,0.3333333333333333,0.2,0.09476260002702475,13.937773199984804,118|64|66|16|64,1,0,"Según la Guía ESC 2024 sobre el manejo de la presión arterial elevada y la hipertensión, una presión arterial en el embarazo que alcance **≥ 160 mmHg sistólica y ≥ 110 mmHg diastólica** se considera indicativa de una emergencia hipertensiva y debe generar la consideración de hospitalización inmediata (p. 66).",,,
+Q17,erc,"En pacientes con hipertensión y enfermedad renal crónica con TFGe superior a 20 ml/min/1,73 m2, ¿qué grupo farmacológico recomienda la guía para mejorar resultados?",Inhibidores SGLT2.,72|77|71|71|123,72,0.88638|0.88273|0.87766|0.87693|0.87433,1,1,1,1.0,0.2,0.14626159996259958,6.3292714999988675,72|77|71|71|123,1,1,No ha sido posible generar una respuesta final a partir de la documentación recuperada. Reformule la consulta o revise las fuentes asociadas a la sesión.,,,
+Q18,medicion,¿Qué diferencia de presión arterial sistólica entre ambos brazos se considera relevante y qué debe hacerse después?,Diferencia >10 mmHg; repetir/confirmar y usar posteriormente el brazo con lectura más alta.,22|27|87|81|81,22|27|87,0.88501|0.87862|0.86609|0.86058|0.85269,1,1,1,1.0,0.6,0.10881560004781932,13.229838299914263,22|27|87|81|81,1,0,"La diferencia de presión arterial sistólica entre brazos que se considera clínica y relevante es **>10 mmHg**.  
+
+Cuando se detecta una diferencia mayor a 10 mmHg:
+
+1. Se deben repetir las mediciones en el brazo con la lectura **más elevada** hasta que la diferencia sea consistente (según la guía, se hace más mediciones si la diferencia es >10 mmHg).  
+2. A partir de entonces, todas las mediciones posteriores de la PA se realizan **en el brazo con la lectura más alta** (para evitar variabilidad entre brazos) [^1][^2].  
+3. Una diferencia sostenida >10 mmHg puede indicar patologías vasculares como estenosis arterial o coartación de la aorta, por lo que se recomienda considerar estudios complementarios (por ejemplo, ecografía de los grandes vasos) para descartar estas causas.
+
+---
+
+**Acción sugerida:**  
+Consultar al paciente con la posibilidad de realizar una ecografía Doppler de los vasos de los brazos para evaluar la presencia de estenosis o coartación, y ajustar la práctica clínica según los hallazgos.
+
+[^1]: GPC_ESC_2024_PA_elevada_e_hipertension.pdf, página 22.  
+[^2]: GPC",,,
+Q19,medicion,¿Cuánto tiempo debe permanecer el paciente en reposo antes de medir la presión arterial en consulta?,5 minutos sentado cómodamente antes de la medición.,25|24|27|23|11,11|23|27,0.86459|0.86354|0.86058|0.85979|0.85927,0,1,1,0.3333333333333333,0.6,0.10880489996634424,14.414689299999736,25|24|27|23|11,1,0,"Para obtener una lectura fiable de la presión arterial en la consulta, el paciente debe permanecer en reposo **al menos 5 minutos** en posición sentada (o acostada) antes de que se realice la medición.  
+Esta recomendación se encuentra en la Guía ESC 202",,,
+Q20,monitorizacion,¿Durante cuántos días recomienda la guía realizar la automedida de presión arterial en domicilio?,"Mínimo 3 días e idealmente 7 días, con dos sesiones diarias.",25|23|21|95|132,23,0.88658|0.88588|0.88360|0.87768|0.87312,0,1,1,0.5,0.2,0.10449489997699857,11.994334599934518,25|23|21|95|132,1,0,"La guía recomienda que la medición automédica de la presión arterial en domicilio se realice **durante al menos 7 días** (idealmente 2‑3 veces al día, de lunes a viernes).  Esta periodicidad es la mínima para que la medición sea considerada fiable y permita una valoración adecuada de la hipertensión.",,,
+N01,sin_evidencia,¿Qué pauta antibiótica recomienda esta guía para tratar una otitis media aguda?,La guía no aborda el tratamiento de la otitis media aguda.,,,,,,,,,,24.217309099971317,3|73|112|127|68,,0,"**La guía ESC 2024 sobre presión arterial elevada y hipertensión no incluye indicaciones para el tratamiento de la otitis media aguda.**  
+Es una guía centrada en la prevención, diagnóstico y manejo de la hipertensión, y por tanto no ofrece pautas terapéuticas para infecciones de oído ni otros trastornos infecciosos.
+
+Para el manejo de una otitis media aguda (OMA) se recurre a los estándares de tratamiento de las sociedades de pediatría, otorrinolaringología e infección, como la **Guía de práctica clínica de la Academia Americana de Pediatría (AAP)**, la **Guía de práctica clínica de la Sociedad de Otorrinolaringología de EE. UU. (ENT‑S)** o la **Guía de práctica clínica de la Infectious Diseases Society of America (IDSA)**.  A continuación se resume la recomendación antibiótica más citada por estos organismos para OMA aguda en la población general (sin alergia a la penicilina):
+
+| **Fármaco** | **Dosis típica** | **Duración** | **Observaciones** |
+|-------------|------------------|--------------|-------------------|
+| **Amoxicilina** (500 mg PO cada 8 h) | 5–10 días | 5 días en niños < 3 años y adultos; 7–10 días en niños ≥ 3 años o adultos | Es el tratamiento de primera elección cuando la penicilina se tolera. |
+| **Amoxicilina‑clavulanato** (500 mg/125 mg PO cada 12 h) | 5–10 días | 5 días en niños < 3 años y adultos; 7–10 días en niños ≥ 3 años o adultos | Se utiliza cuando se sospecha infección por **H. influenzae** o **M. catarrhalis** con producción de β‑lactamasa, o cuando la respuesta al tratamiento con amoxicilina no es satisfactoria. |
+| **Cefdinir** (300 mg PO cada 12 h) | 5–10 días | 5 días en niños < 3 años y adultos; 7–10 días en niños ≥ 3 años o adultos | Alternativa cuando existe alergia leve a la penicilina. |
+| **Azitromicina** (500 mg PO el primer día, 250 mg PO los 4 días siguientes) | 5 días | 5 días | Útil en alergia a la penicilina o en pacientes con riesgo de colonización por **Streptococcus viridans**. |
+
+### Cuándo optar por la amoxicilina‑clavulanato (A‑C)
+1. **Alto riesgo de resistencia** (por ejemplo, en regiones con prevalencia > 30 % de **H. influenzae** β‑lactamasa).  
+2. **Mala respuesta o recaída** tras 48 h de tratamiento con amoxicilina.  
+3. **Historia de otitis media crónica** o recurrente.  
+4. **Infección asociada a** otitis media con perforación del tímpano.  
+
+### Alérgicos a la penicilina
+- **Cefdinir** o **azitromicina** son las opciones de primera línea.  
+- Si la alergia es severa (anafilaxia), se prefiere **azitromicina** o se considera el uso de un **macrólido** con ajuste de dosis.  
+
+### Duración
+- **5 días** suele ser suficiente en la mayoría de los casos, reduciendo la exposición a antibióticos y la selección de resistencia.  
+- En niños > 3 años o en casos de complicaciones (pseudotrombosis, meningitis, absceso facial), se puede prolongar a **7–10 días** o según la evolución clínica.  
+
+---
+
+#### Resumen
+La **guía ESC 2024 de hipertensión** no aborda la otitis media aguda.  Para el tratamiento antibiótico de una OMA aguda, la práctica estándar es:
+
+1. **Amoxicilina 500 mg PO cada 8 h por 5 días** (si la penicilina es tolerada).  
+2. **Amoxicilina‑clavulanato 500 mg/125 mg PO cada 12 h** cuando se sospecha producción de β‑lactamasa o falta de respuesta a la amoxicilina.  
+3. Alternativas en caso de alergia a la penicilina: cefdinir o azitromicina según el caso clínico.
+
+Siempre se recomienda la valoración individual del paciente, la revisión de la resistencia local y la actualización con las guías más recientes (AAP, ENT‑S, IDSA).",,,
+N02,sin_evidencia,¿Cuál es la dosis de amoxicilina recomendada por esta guía para una neumonía adquirida en la comunidad?,La guía no contiene una pauta de amoxicilina para neumonía.,,,,,,,,,,15.38098550005816,10|118|10|112|102,,0,"La Guía ESC 2024 sobre el manejo de la presión arterial elevada y la hipertensión no aborda ni recomienda dosis de antibióticos para neumonía adquirida en la comunidad. Por lo tanto, en esta guía no se indica una dosis de amoxicilina para ese cuadro clínico.",,,
+N03,sin_evidencia,¿Qué tratamiento recomienda esta guía para una fractura de fémur?,La guía no aborda el tratamiento de fracturas.,,,,,,,,,,14.357735199970193,72|68|103|10|79,,0,"La Guía ESC 2024 sobre presión arterial elevada y hipertensión no cubre el manejo de fracturas de fémur.  
+En consecuencia, la guía no ofrece ninguna recomendación específica para el tratamiento de una fractura de fémur.  
+
+Para el tratamiento de fracturas de fémur se recomienda consultar guías y protocolos ortopédicos, por ejemplo:
+
+* Guías de la Sociedad Americana de Ortopedia (AAOS) sobre fracturas de fémur proximal o distal.  
+* Directrices de la Asociación Europea de Cirugía Ortopédica y Traumatología (ESCEO) o la Sociedad Europea de Fracturas (ESF).  
+
+Estas fuentes proporcionan orientación sobre la cirugía de fijación interna, la fisioterapia postoperatoria y la gestión de complicaciones.
+
+> **Nota**: Esta respuesta no sustituye el consejo médico profesional y debe verificarse con un especialista en ortopedia.",,,
+N04,sin_evidencia,¿Qué calendario vacunal infantil recomienda esta guía?,La guía no contiene un calendario vacunal infantil.,,,,,,,,,,11.35696010000538,106|118|10|6|10,,0,"La guía “GPC ESC 2024 PA elevada e hipertensión” no contiene ninguna recomendación sobre el calendario vacunal infantil. Ese documento se centra exclusivamente en el diagnóstico, la evaluación y el manejo de la hipertensión arterial en adultos, y no incluye directrices de vacunación pediátrica. 
+
+Si necesitas información sobre el calendario vacunal recomendado en España (por ejemplo, el plan de vacunación del Sistema Nacional de Salud) o la guía de vacunación del Ministerio de Sanidad, la Sociedad Española de Pediatría u otras entidades, puedes consultar los recursos oficiales que las publican, como:
+
+- El Plan Nacional de Vacunación 2024–2027, disponible en la página web del Ministerio de Sanidad, Consumo y Bienestar Social.  
+- La guía de vacunación de la Sociedad Española de Pediatría (SEP).  
+- El “Calendario de Vacunación” publicado por la Agencia Española de Medicamentos y Productos Sanitarios (AEMPS).  
+
+En esos documentos se detallan las vacunas recomendadas, los plazos de administración y las dosis en cada etapa de la infancia. Si necesitas la lista concreta de vacunas y los intervalos de edad, puedo proporcionarla o indicarte dónde encontrarla.",,,
+N05,sin_evidencia,¿Qué dosis de insulina rápida recomienda esta guía para una cetoacidosis diabética?,La guía no contiene una pauta terapéutica de insulina para cetoacidosis.,,,,,,,,,,9.627730900072493,122|72|17|7|74,,0,"Lo siento, pero no dispongo de la información necesaria para responder esa pregunta.",,,
