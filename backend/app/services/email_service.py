@@ -15,7 +15,7 @@ conf = ConnectionConfig(
     USE_CREDENTIALS=True
 )
 
-async def send_reminder_email(tasks_by_session: list[dict], recipient: str = None):
+async def send_reminder_email(tasks_by_session: list[dict], recipient: str):
     """
     Envía un email resumen con las tareas pendientes agrupadas por sesión.
     
@@ -26,9 +26,6 @@ async def send_reminder_email(tasks_by_session: list[dict], recipient: str = Non
     """
     if not tasks_by_session:
         return
-
-    if not recipient:
-        recipient = os.getenv("REMINDER_EMAIL")
 
     # Construir el cuerpo del email en HTML
     html_content = """
