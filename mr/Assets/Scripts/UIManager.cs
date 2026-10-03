@@ -59,8 +59,14 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        // Botón A del mando derecho: activar/desactivar grabación de voz
-        if (OVRInput.GetDown(OVRInput.Button.One))
+        // Botón A exclusivamente del controlador derecho:
+        // activar/desactivar grabación de voz.
+        // Se especifica RTouch para evitar que el gesto de pinch
+        // del seguimiento de manos sea interpretado como Button.One.
+        if (OVRInput.GetDown(
+            OVRInput.Button.One,
+            OVRInput.Controller.RTouch
+        ))
         {
             OnVoiceButtonPressed();
         }

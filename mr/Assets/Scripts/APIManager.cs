@@ -11,7 +11,7 @@ public class APIManager : MonoBehaviour
 {
     [Header("Configuración API")]
     public string apiBaseUrl = "http://192.168.1.18:8000/api";
-    public string sessionId = "1ba98b01-a7ad-47f6-8903-91916f6627b4";
+    public string sessionId = "4fc0b7b8-6693-4d09-bbb4-ab9674e10220";
     
     [Header("Scroll")]
     public ScrollRect scrollRect;

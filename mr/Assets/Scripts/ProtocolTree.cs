@@ -59,96 +59,323 @@ public class ProtocolTree : MonoBehaviour
             {
                 id = 0,
                 title = "Evaluación inicial",
-                description = "El paciente acude a consulta. Seleccione el motivo de la visita.",
+                description =
+                    "Evaluación inicial de la presión arterial según la guía ESC 2024.",
                 isFinal = false,
                 options = new List<ProtocolOption>
                 {
-                    new ProtocolOption { label = "Medir presión arterial", nextNodeId = 1 },
-                    new ProtocolOption { label = "Síntomas graves", nextNodeId = 2 }
+                    new ProtocolOption
+                    {
+                        label = "Clasificar presión arterial",
+                        nextNodeId = 1
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Cifras muy elevadas o síntomas graves",
+                        nextNodeId = 2
+                    }
                 }
             },
+
             new ProtocolNode
             {
                 id = 1,
-                title = "Clasificación de la PA",
-                description = "Tome dos mediciones en reposo. Seleccione el resultado.",
+                title = "Clasificación de la presión arterial",
+                description =
+                    "Clasifique la presión arterial medida en consulta según las categorías ESC 2024.",
                 isFinal = false,
                 options = new List<ProtocolOption>
                 {
-                    new ProtocolOption { label = "Normal (<130/85 mmHg)", nextNodeId = 3 },
-                    new ProtocolOption { label = "Normal-alta (130-139/85-89)", nextNodeId = 4 },
-                    new ProtocolOption { label = "HTA (≥140/90 mmHg)", nextNodeId = 5 }
+                    new ProtocolOption
+                    {
+                        label = "PA no elevada (<120/70 mmHg)",
+                        nextNodeId = 3
+                    },
+                    new ProtocolOption
+                    {
+                        label = "PA elevada (120-139/70-89 mmHg)",
+                        nextNodeId = 4
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Hipertensión (≥140/90 mmHg)",
+                        nextNodeId = 5
+                    }
                 }
             },
+
             new ProtocolNode
             {
                 id = 2,
-                title = "Síntomas graves",
-                description = "Paciente con síntomas de emergencia hipertensiva. Derivar a urgencias inmediatamente.",
-                isFinal = true,
-                options = new List<ProtocolOption>()
+                title = "Cifras muy elevadas",
+                description =
+                    "Ante una presión arterial igual o superior a 180/110 mmHg debe descartarse una emergencia hipertensiva.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Signos o síntomas de emergencia",
+                        nextNodeId = 6
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Sin signos de emergencia",
+                        nextNodeId = 7
+                    }
+                }
             },
+
             new ProtocolNode
             {
                 id = 3,
-                title = "Presión arterial normal",
-                description = "PA dentro de rangos normales. Recomendar revisión en 12 meses y mantener hábitos saludables.",
-                isFinal = true,
-                options = new List<ProtocolOption>()
+                title = "Presión arterial no elevada",
+                description =
+                    "Presión arterial en consulta inferior a 120 mmHg sistólica y 70 mmHg diastólica.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Paciente menor de 40 años",
+                        nextNodeId = 8
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Paciente de 40 años o más",
+                        nextNodeId = 9
+                    }
+                }
             },
+
             new ProtocolNode
             {
                 id = 4,
-                title = "Presión arterial normal-alta",
-                description = "PA en rango normal-alto. Recomendar cambios en el estilo de vida y revisión en 6 meses.",
+                title = "Presión arterial elevada",
+                description =
+                    "Presión arterial sistólica de 120-139 mmHg y/o diastólica de 70-89 mmHg. El manejo depende del riesgo cardiovascular.",
                 isFinal = false,
                 options = new List<ProtocolOption>
                 {
-                    new ProtocolOption { label = "Cambios de estilo de vida", nextNodeId = 6 },
-                    new ProtocolOption { label = "Factores de riesgo adicionales", nextNodeId = 7 }
+                    new ProtocolOption
+                    {
+                        label = "Valorar riesgo cardiovascular",
+                        nextNodeId = 10
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Aplicar cambios en estilo de vida",
+                        nextNodeId = 11
+                    }
                 }
             },
+
             new ProtocolNode
             {
                 id = 5,
-                title = "Hipertensión arterial",
-                description = "PA elevada confirmada. Evaluar el grado de hipertensión.",
+                title = "Hipertensión",
+                description =
+                    "Presión arterial en consulta igual o superior a 140/90 mmHg. El diagnóstico debe confirmarse preferentemente mediante AMPA o MAPA.",
                 isFinal = false,
                 options = new List<ProtocolOption>
                 {
-                    new ProtocolOption { label = "Grado I (140-159/90-99)", nextNodeId = 8 },
-                    new ProtocolOption { label = "Grado II-III (≥160/100)", nextNodeId = 9 }
+                    new ProtocolOption
+                    {
+                        label = "140-159/90-99 mmHg",
+                        nextNodeId = 12
+                    },
+                    new ProtocolOption
+                    {
+                        label = "160-179/100-109 mmHg",
+                        nextNodeId = 13
+                    },
+                    new ProtocolOption
+                    {
+                        label = "≥180/110 mmHg",
+                        nextNodeId = 2
+                    }
                 }
             },
+
             new ProtocolNode
             {
                 id = 6,
-                title = "Cambios de estilo de vida",
-                description = "Recomendar dieta baja en sal, ejercicio moderado, reducción del alcohol y control del peso. Revisión en 3 meses.",
+                title = "Posible emergencia hipertensiva",
+                description =
+                    "La presencia de daño agudo de órgano diana o signos clínicos compatibles requiere evaluación y tratamiento inmediato.",
                 isFinal = true,
                 options = new List<ProtocolOption>()
             },
+
             new ProtocolNode
             {
                 id = 7,
-                title = "Factores de riesgo adicionales",
-                description = "Evaluar factores de riesgo cardiovascular. Considerar inicio de tratamiento farmacológico.",
+                title = "Hipertensión grave sin emergencia",
+                description =
+                    "Si la presión arterial es ≥180/110 mmHg pero no existe una emergencia hipertensiva, puede confirmarse lo antes posible, preferentemente antes de una semana.",
                 isFinal = true,
                 options = new List<ProtocolOption>()
             },
+
             new ProtocolNode
             {
                 id = 8,
-                title = "HTA Grado I",
-                description = "Iniciar tratamiento farmacológico con un fármaco de primera línea. Revisión en 1 mes.",
+                title = "Cribado en menores de 40 años",
+                description =
+                    "En adultos menores de 40 años con presión arterial no elevada se puede considerar un cribado oportunista al menos cada 3 años.",
                 isFinal = true,
                 options = new List<ProtocolOption>()
             },
+
             new ProtocolNode
             {
                 id = 9,
-                title = "HTA Grado II-III",
-                description = "Iniciar tratamiento farmacológico combinado urgente. Considerar derivación a cardiología.",
+                title = "Cribado en adultos de 40 años o más",
+                description =
+                    "En adultos de 40 años o más se puede considerar un cribado oportunista de la presión arterial al menos una vez al año.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 10,
+                title = "Evaluación del riesgo cardiovascular",
+                description =
+                    "En pacientes con presión arterial elevada debe evaluarse el riesgo cardiovascular. Se consideran de riesgo aumentado, entre otros, pacientes con enfermedad cardiovascular establecida, enfermedad renal crónica moderada o grave, daño orgánico mediado por hipertensión, diabetes o hipercolesterolemia familiar. En otros pacientes se puede utilizar SCORE2 o SCORE2-OP.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Riesgo cardiovascular aumentado",
+                        nextNodeId = 14
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Riesgo no aumentado",
+                        nextNodeId = 15
+                    }
+                }
+            },
+
+            new ProtocolNode
+            {
+                id = 11,
+                title = "Cambios en el estilo de vida",
+                description =
+                    "En pacientes con presión arterial elevada se recomiendan modificaciones del estilo de vida como primera medida. La guía propone mantener estas intervenciones durante aproximadamente tres meses antes de considerar tratamiento farmacológico en pacientes con riesgo elevado.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 12,
+                title = "Confirmación de hipertensión",
+                description =
+                    "Con cifras de 140-159/90-99 mmHg, el diagnóstico debe confirmarse mediante AMPA o MAPA. Si no fuese posible, puede repetirse la medición estandarizada en más de una visita.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Hipertensión confirmada",
+                        nextNodeId = 16
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Hipertensión no confirmada",
+                        nextNodeId = 17
+                    }
+                }
+            },
+
+            new ProtocolNode
+            {
+                id = 13,
+                title = "Hipertensión de mayor intensidad",
+                description =
+                    "Con cifras de 160-179/100-109 mmHg, la presión arterial debe confirmarse lo antes posible, preferentemente mediante AMPA o MAPA y antes de un mes.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Hipertensión confirmada",
+                        nextNodeId = 16
+                    }
+                }
+            },
+
+            new ProtocolNode
+            {
+                id = 14,
+                title = "PA elevada con riesgo cardiovascular aumentado",
+                description =
+                    "En pacientes con presión arterial elevada y riesgo cardiovascular aumentado se recomiendan cambios en el estilo de vida y reevaluación posterior. Si la presión arterial se mantiene elevada, puede valorarse tratamiento farmacológico según las recomendaciones de la guía.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 15,
+                title = "PA elevada sin riesgo cardiovascular aumentado",
+                description =
+                    "En pacientes con presión arterial elevada y riesgo cardiovascular no aumentado se recomiendan principalmente cambios en el estilo de vida y seguimiento periódico.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 16,
+                title = "Hipertensión confirmada",
+                description =
+                    "En pacientes con hipertensión confirmada se recomienda combinar cambios en el estilo de vida y tratamiento farmacológico, individualizando el manejo según el riesgo cardiovascular, la tolerancia y las características del paciente.",
+                isFinal = false,
+                options = new List<ProtocolOption>
+                {
+                    new ProtocolOption
+                    {
+                        label = "Seguimiento tras iniciar tratamiento",
+                        nextNodeId = 18
+                    },
+                    new ProtocolOption
+                    {
+                        label = "Valorar causas secundarias",
+                        nextNodeId = 19
+                    }
+                }
+            },
+
+            new ProtocolNode
+            {
+                id = 17,
+                title = "Hipertensión no confirmada",
+                description =
+                    "Si las mediciones fuera de consulta no confirman hipertensión, debe reevaluarse el patrón de presión arterial y considerar situaciones como el efecto de bata blanca.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 18,
+                title = "Seguimiento del tratamiento",
+                description =
+                    "Tras iniciar el tratamiento antihipertensivo se recomienda realizar controles frecuentes, aproximadamente cada 1-3 meses, hasta alcanzar un adecuado control de la presión arterial.",
+                isFinal = true,
+                options = new List<ProtocolOption>()
+            },
+
+            new ProtocolNode
+            {
+                id = 19,
+                title = "Evaluación de hipertensión secundaria",
+                description =
+                    "Debe considerarse el estudio de causas secundarias especialmente en pacientes jóvenes, hipertensión resistente o presencia de signos y síntomas sugestivos.",
                 isFinal = true,
                 options = new List<ProtocolOption>()
             }
@@ -164,10 +391,12 @@ public class ProtocolTree : MonoBehaviour
         if (currentNode == null)
             return;
 
-        currentPath.Add(new PathStep(
-            currentNode.id,
-            currentNode.title
-        ));
+        currentPath.Add(
+            new PathStep(
+                currentNode.id,
+                currentNode.title
+            )
+        );
 
         RefreshTreeUI();
     }
@@ -203,7 +432,6 @@ public class ProtocolTree : MonoBehaviour
             if (node == null)
                 continue;
 
-            // Indica si el nodo se puede expandir..
             pathCanExpand.Add(
                 node.options != null &&
                 node.options.Count > 0
@@ -264,8 +492,16 @@ public class ProtocolTree : MonoBehaviour
 
     public void AskAssistant()
     {
-        if (currentNode == null || apiManager == null) return;
-        string query = "Estoy evaluando: " + currentNode.title + ". " + currentNode.description + " ¿Qué me recomiendas?";
+        if (currentNode == null || apiManager == null)
+            return;
+
+        string query =
+            "Según la documentación clínica disponible en esta sesión, " +
+            "explica cómo debe interpretarse y manejarse el siguiente punto del protocolo: " +
+            currentNode.title + ". " +
+            currentNode.description +
+            " Basa la respuesta únicamente en la documentación disponible y cita las fuentes utilizadas.";
+
         apiManager.SendQuery(query);
     }
 
@@ -292,26 +528,34 @@ public class ProtocolTree : MonoBehaviour
 
     private void OnOptionClicked(int optionIndex)
     {
-        if (currentNode == null)
+        if (
+            currentNode == null ||
+            optionIndex < 0 ||
+            optionIndex >= currentNode.options.Count
+        )
+        {
             return;
+        }
 
-        if (optionIndex < 0 || optionIndex >= currentNode.options.Count)
-            return;
-
-        ProtocolOption selectedOption = currentNode.options[optionIndex];
+        ProtocolOption selectedOption =
+            currentNode.options[optionIndex];
 
         ProtocolNode nextNode =
-            nodes.Find(n => n.id == selectedOption.nextNodeId);
+            nodes.Find(
+                n => n.id == selectedOption.nextNodeId
+            );
 
         if (nextNode == null)
             return;
 
         currentNode = nextNode;
 
-        currentPath.Add(new PathStep(
-            nextNode.id,
-            selectedOption.label
-        ));
+        currentPath.Add(
+            new PathStep(
+                nextNode.id,
+                selectedOption.label
+            )
+        );
 
         RefreshTreeUI();
     }
@@ -324,7 +568,9 @@ public class ProtocolTree : MonoBehaviour
             return;
 
         ProtocolNode parentNode =
-            nodes.Find(n => n.id == currentPath[level].nodeId);
+            nodes.Find(
+                n => n.id == currentPath[level].nodeId
+            );
 
         if (parentNode == null)
             return;
@@ -333,12 +579,12 @@ public class ProtocolTree : MonoBehaviour
             optionIndex < 0 ||
             optionIndex >= parentNode.options.Count
         )
+        {
             return;
+        }
 
-        // Volvemos conceptualmente a ese nivel.
         currentNode = parentNode;
 
-        // Quitamos todo lo que había por debajo.
         int removeCount =
             currentPath.Count - level - 1;
 
@@ -350,7 +596,6 @@ public class ProtocolTree : MonoBehaviour
             );
         }
 
-        // Elegimos la nueva rama.
         ProtocolOption selectedOption =
             parentNode.options[optionIndex];
 
@@ -374,15 +619,23 @@ public class ProtocolTree : MonoBehaviour
         RefreshTreeUI();
     }
 
-    private void OnPathNodeClicked(int pathIndex)
+        private void OnPathNodeClicked(int pathIndex)
     {
-        if (pathIndex < 0 || pathIndex >= currentPath.Count)
+        if (
+            pathIndex < 0 ||
+            pathIndex >= currentPath.Count
+        )
+        {
             return;
+        }
 
-        PathStep selectedStep = currentPath[pathIndex];
+        PathStep selectedStep =
+            currentPath[pathIndex];
 
         currentNode =
-            nodes.Find(n => n.id == selectedStep.nodeId);
+            nodes.Find(
+                n => n.id == selectedStep.nodeId
+            );
 
         if (currentNode == null)
             return;
