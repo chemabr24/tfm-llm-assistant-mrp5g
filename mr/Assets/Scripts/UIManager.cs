@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        sessionInfoText.text = "Sesión 'Revision HTA'";
+        sessionInfoText.text = "Sesión 'Evaluación Hipertensión'";
         statusText.text = "Pulsa el botón para hablar";
         UpdateVoiceButtonLabel("Hablar");
         apiManager.OnQueryFinished += () => statusText.text = "";

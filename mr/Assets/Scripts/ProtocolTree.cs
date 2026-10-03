@@ -505,27 +505,6 @@ public class ProtocolTree : MonoBehaviour
         apiManager.SendQuery(query);
     }
 
-    void Update()
-    {
-        // Botón B del mando derecho:
-        // seleccionar la primera opción disponible
-        if (
-            OVRInput.GetDown(OVRInput.Button.Two) &&
-            currentNode != null &&
-            currentNode.options.Count > 0
-        )
-        {
-            OnOptionClicked(0);
-        }
-
-        // Botón X del mando izquierdo:
-        // reiniciar el protocolo
-        if (OVRInput.GetDown(OVRInput.Button.Three))
-        {
-            ResetProtocol();
-        }
-    }
-
     private void OnOptionClicked(int optionIndex)
     {
         if (
