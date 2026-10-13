@@ -1,0 +1,36 @@
+<div class="upload-container">
+  <button
+    mat-icon-button
+    matTooltip="Adjuntar documento PDF"
+    (click)="fileInput.click()"
+    [disabled]="isUploading"
+    class="attach-button">
+    <mat-icon>attach_file</mat-icon>
+  </button>
+
+  <input
+    #fileInput
+    type="file"
+    accept=".pdf"
+    hidden
+    (change)="onFileSelected($event)">
+
+  <span *ngIf="selectedFile && !isUploading" class="file-name">
+    {{ selectedFile.name }}
+  </span>
+
+  <button
+    *ngIf="selectedFile && !isUploading"
+    mat-icon-button
+    color="primary"
+    (click)="uploadFile()"
+    matTooltip="Subir documento">
+    <mat-icon>upload</mat-icon>
+  </button>
+
+  <mat-progress-bar
+    *ngIf="uploadProgress"
+    mode="indeterminate"
+    class="upload-progress">
+  </mat-progress-bar>
+</div>

@@ -1,0 +1,68 @@
+<div class="create-session-container">
+  <h2 mat-dialog-title>Nueva sesión</h2>
+
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título de la sesión</mat-label>
+      <input
+        matInput
+        [value]="title()"
+        (input)="title.set($any($event.target).value)"
+        placeholder="Ej: Revisión HTA, Control diabetes..."
+        required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Identificador del paciente (opcional)</mat-label>
+      <input
+        matInput
+        [value]="patientIdentifier()"
+        (input)="patientIdentifier.set($any($event.target).value)"
+        placeholder="Ej: PAC-001, Juan G...">
+      <mat-hint>No introduzcas datos identificativos reales</mat-hint>
+    </mat-form-field>
+
+    <div class="mode-selector">
+      <p class="mode-label">Tipo de sesión:</p>
+      <mat-radio-group [value]="mode()" (change)="mode.set($any($event.value))">
+        <mat-radio-button value="import">
+          <mat-icon>upload_file</mat-icon>
+          Importar documento PDF
+        </mat-radio-button>
+        <mat-radio-button value="simulate">
+          <mat-icon>psychology</mat-icon>
+          Simular caso clínico
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    @if (mode() === 'simulate') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción del caso clínico</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          [value]="simulationDescription()"
+          (input)="simulationDescription.set($any($event.target).value)"
+          placeholder="Ej: Paciente de 45 años que acude por dolor de espalda durante 3 días...">
+        </textarea>
+        <mat-hint>El sistema generará un caso clínico ficticio completo</mat-hint>
+      </mat-form-field>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()" [disabled]="isCreating()">Cancelar</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="create()"
+      [disabled]="!title().trim() || isCreating() || (mode() === 'simulate' && !simulationDescription().trim())">
+      @if (isCreating()) {
+        {{ mode() === 'simulate' ? 'Generando caso...' : 'Creando...' }}
+      } @else {
+        Crear sesión
+      }
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,45 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <button mat-icon-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Perfil</h1>
+    </div>
+
+    <div class="profile-content">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput [value]="email()" disabled>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Frecuencia de recordatorios</mat-label>
+        <mat-select
+          [value]="notificationFrequency()"
+          (selectionChange)="notificationFrequency.set($event.value)">
+          <mat-option value="daily">Diaria</mat-option>
+          <mat-option value="weekly">Semanal</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        color="primary"
+        class="full-width"
+        (click)="saveProfile()"
+        [disabled]="isSaving()">
+        {{ isSaving() ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+
+      <button
+        mat-stroked-button
+        color="warn"
+        class="full-width logout-btn"
+        (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</div>

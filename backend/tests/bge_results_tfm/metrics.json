@@ -1,0 +1,59 @@
+{
+  "session_id": "3a0ece8b-1d95-419a-bac5-bba6d0f51186",
+  "top_k": 5,
+  "retrieval": {
+    "questions": 20,
+    "hit_at_1": 0.3,
+    "hit_at_3": 0.5,
+    "hit_at_5": 0.5,
+    "mrr": 0.3833333333333333,
+    "precision_at_5": 0.12000000000000001,
+    "latency_seconds": {
+      "n": 20,
+      "mean": 0.1379917400132399,
+      "median": 0.12987624999368563,
+      "min": 0.09623329993337393,
+      "max": 0.2874448000220582,
+      "p95": 0.2076458449999337,
+      "stdev": 0.041789296541150704
+    }
+  },
+  "end_to_end": {
+    "questions": 20,
+    "failures": 6,
+    "completion_rate": 0.7,
+    "expected_source_hit_rate": 0.5,
+    "answer_length_chars": {
+      "n": 20,
+      "mean": 457.35,
+      "median": 319.0,
+      "min": 0,
+      "max": 1837,
+      "p95": 1621.3500000000001,
+      "stdev": 528.0154777436378
+    },
+    "total_latency_seconds": {
+      "n": 20,
+      "mean": 11.115442574996269,
+      "median": 10.285278049996123,
+      "min": 6.636264799977653,
+      "max": 19.045334999915212,
+      "p95": 17.14306839501951,
+      "stdev": 3.0764487308933
+    }
+  },
+  "no_evidence": {
+    "questions": 5,
+    "abstention_rate_heuristic": 0.6,
+    "latency_seconds": {
+      "n": 5,
+      "mean": 10.276549640018493,
+      "median": 10.001572199980728,
+      "min": 7.705477900104597,
+      "max": 14.670589699991979,
+      "p95": 13.821585320006125,
+      "stdev": 2.687734018976497
+    },
+    "warning": "La tasa de abstención se detecta mediante expresiones textuales y debe revisarse manualmente antes de incluirla como resultado definitivo en la memoria."
+  }
+}

@@ -1,0 +1,15 @@
+<button
+  mat-icon-button
+  [color]="isRecording() ? 'warn' : ''"
+  [class.recording]="isRecording()"
+  (click)="toggleRecording()"
+  [disabled]="isTranscribing()"
+  [matTooltip]="isRecording() ? 'Detener grabación' : isTranscribing() ? 'Transcribiendo...' : 'Grabar audio'">
+  @if (isTranscribing()) {
+    <mat-icon>hourglass_empty</mat-icon>
+  } @else if (isRecording()) {
+    <mat-icon>stop</mat-icon>
+  } @else {
+    <mat-icon>mic</mat-icon>
+  }
+</button>
